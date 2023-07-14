@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2D121ED4-955A-4973-81E5-2C4F8A6897FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{9ABAC53A-E605-42A0-92C9-E17201CC242F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.BinlogRedactor", "src\Microsoft.Build.BinlogRedactor\Microsoft.Build.BinlogRedactor.csproj", "{19502C74-1099-4FF0-B931-D9B66FE560EA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.BinlogRedactor.Tests", "test\Microsoft.Build.BinlogRedactor.Tests\Microsoft.Build.BinlogRedactor.Tests.csproj", "{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{19502C74-1099-4FF0-B931-D9B66FE560EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19502C74-1099-4FF0-B931-D9B66FE560EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19502C74-1099-4FF0-B931-D9B66FE560EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19502C74-1099-4FF0-B931-D9B66FE560EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{19502C74-1099-4FF0-B931-D9B66FE560EA} = {2D121ED4-955A-4973-81E5-2C4F8A6897FB}
+		{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14} = {9ABAC53A-E605-42A0-92C9-E17201CC242F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C09E239D-C6E7-45EF-B66B-09DCB846F4DC}
+	EndGlobalSection
+EndGlobal
