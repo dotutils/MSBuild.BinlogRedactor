@@ -1,0 +1,17 @@
+<Project>
+  <!-- Import references updated by Dependabot.
+  <Import Project="dependabot\Packages.props" /> -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Build" Version="17.8.0-dev-23417-01" />
+  
+	<!-- Those all should probably go under dependabot - not parametrizing them now -->
+	<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageVersion Include="System.CommandLine.Hosting" Version="0.4.0-alpha.22272.1" />
+    <PackageVersion Include="System.CommandLine.NamingConventionBinder" Version="2.0.0-beta4.22272.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+</Project>

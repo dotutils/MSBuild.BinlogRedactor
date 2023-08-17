@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+ 
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <DirectoryPackagesPropsPath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'Packages.props'))</DirectoryPackagesPropsPath>
+  </PropertyGroup>
+
+</Project>

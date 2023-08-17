@@ -214,6 +214,9 @@ Samples/MultiprocessBuild/PortableTask.dll
 stage1/
 .tools
 
+# Not yet published packages
+.offline-packages
+
 # ETL traces
 *.etl.zip
 
