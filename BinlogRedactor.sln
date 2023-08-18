@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.BinlogRedac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.BinlogRedactor.Tests", "test\Microsoft.Build.BinlogRedactor.Tests\Microsoft.Build.BinlogRedactor.Tests.csproj", "{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.BinlogRedactor.CLI", "src\Microsoft.Build.BinlogRedactor.CLI\Microsoft.Build.BinlogRedactor.CLI.csproj", "{898FBC5B-06FE-47D5-A590-1342DB6ED597}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{898FBC5B-06FE-47D5-A590-1342DB6ED597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{898FBC5B-06FE-47D5-A590-1342DB6ED597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{898FBC5B-06FE-47D5-A590-1342DB6ED597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{898FBC5B-06FE-47D5-A590-1342DB6ED597}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{19502C74-1099-4FF0-B931-D9B66FE560EA} = {2D121ED4-955A-4973-81E5-2C4F8A6897FB}
 		{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14} = {9ABAC53A-E605-42A0-92C9-E17201CC242F}
+		{898FBC5B-06FE-47D5-A590-1342DB6ED597} = {2D121ED4-955A-4973-81E5-2C4F8A6897FB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C09E239D-C6E7-45EF-B66B-09DCB846F4DC}

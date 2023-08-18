@@ -12,7 +12,7 @@ namespace Microsoft.Build.BinlogRedactor.Reporting
     /// related reference: dotnet new exit codes: https://aka.ms/templating-exit-codes.
     /// Future exit codes should be allocated in a range of 107 - 113. If not sufficient, a range of 79 - 99 may be used as well.
     /// </summary>
-    internal enum BinlogRedactorErrorCode
+    public enum BinlogRedactorErrorCode
     {
         Success = 0,
 

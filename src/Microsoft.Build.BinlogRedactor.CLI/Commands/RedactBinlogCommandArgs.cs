@@ -6,7 +6,7 @@ namespace Microsoft.Build.BinlogRedactor.Commands;
 internal sealed class RedactBinlogCommandArgs
 {
     public RedactBinlogCommandArgs(
-        string[]? passwordsToRedact,
+        string[]? tokensToRedact,
         string? inputPath,
         string? outputFileName,
         bool? dryRun,
@@ -14,7 +14,7 @@ internal sealed class RedactBinlogCommandArgs
         bool? recurse,
         bool? logDetectedSecrets)
     {
-        PasswordsToRedact = passwordsToRedact;
+        TokensToRedact = tokensToRedact;
         InputPath = inputPath;
         OutputFileName = outputFileName;
         DryRun = dryRun;
@@ -23,7 +23,7 @@ internal sealed class RedactBinlogCommandArgs
         LogDetectedSecrets = logDetectedSecrets;
     }
 
-    public string[]? PasswordsToRedact { get; init; }
+    public string[]? TokensToRedact { get; init; }
     public string? InputPath { get; init; }
     public string? OutputFileName { get; init; }
     public bool? DryRun { get; init; }

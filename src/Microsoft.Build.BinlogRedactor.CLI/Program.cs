@@ -28,10 +28,10 @@ internal sealed class Program
                 host.ConfigureServices(services =>
                 {
                     services.AddSingleton<RedactBinlogCommandHandler>();
-                    services.AddSingleton<IBinlogProcessor, SimpleBinlogProcessor>();
                     services.AddSingleton<IStderrWriter, DefaultStderrWriter>();
                     services.AddSingleton<IStdoutWriter, DefaultStdoutWriter>();
-                    services.AddSingleton<IO.IFileSystem, IO.PhysicalFileSystem>();
+                    BinlogRedactor.RegisterDefaultServices(services);
+                    services.AddSingleton<BinlogRedactor>();
                 })
                 .AddCancellationTokenProvider()
                 .ConfigureLogging(logging =>

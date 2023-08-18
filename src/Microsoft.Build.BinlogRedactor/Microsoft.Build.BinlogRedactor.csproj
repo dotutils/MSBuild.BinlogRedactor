@@ -1,18 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
-    <!-- tool packing properties -->
     <IsPackable>true</IsPackable>
-    <PackAsTool>true</PackAsTool>
-    <ToolCommandName>redact-binlog</ToolCommandName>
     <!-- packaging properties -->
-    <PackageVersion>0.0.1-alpha</PackageVersion>
-    <Title>BinlogRedactor dotnet tool</Title>
+    <PackageVersion>0.0.2-alpha</PackageVersion>
+    <Title>BinlogRedactor library</Title>
     <PackageId>MSBuild.BinlogRedactor</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <!-- SourceLink properties -->
@@ -30,12 +26,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
-    <PackageReference Include="System.CommandLine" />
-    <PackageReference Include="System.CommandLine.Hosting" />
-    <PackageReference Include="System.CommandLine.NamingConventionBinder" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>

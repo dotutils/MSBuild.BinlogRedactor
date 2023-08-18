@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 namespace Microsoft.Build.BinlogRedactor.IO;
-internal interface IFileSystem
+public interface IFileSystem
 {
     void CreateDirectory(string path);
 

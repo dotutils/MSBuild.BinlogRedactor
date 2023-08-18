@@ -12,7 +12,7 @@ using Microsoft.Build.Logging;
 
 namespace Microsoft.Build.BinlogRedactor.BinaryLog
 {
-    internal interface ISensitiveDataProcessor
+    public interface ISensitiveDataProcessor
     {
         string ReplaceSensitiveData(string text);
         bool IsSensitiveData(string text);
@@ -43,7 +43,7 @@ namespace Microsoft.Build.BinlogRedactor.BinaryLog
         }
     }
 
-    internal interface IBinlogProcessor
+    public interface IBinlogProcessor
     {
         Task<BinlogRedactorErrorCode> ProcessBinlog(
             string inputFileName,
