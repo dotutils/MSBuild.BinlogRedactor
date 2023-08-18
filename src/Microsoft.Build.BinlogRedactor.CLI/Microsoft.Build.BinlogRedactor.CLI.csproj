@@ -11,7 +11,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>redact-binlog</ToolCommandName>
     <!-- packaging properties -->
-    <PackageVersion>0.0.1-alpha</PackageVersion>
+    <PackageVersion>0.0.2-alpha</PackageVersion>
     <Title>BinlogRedactor dotnet tool</Title>
     <PackageId>MSBuild.BinlogRedactor.CLI</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
