@@ -1,28 +1,22 @@
-# `dotnet redact-binlog` command
+# Usage help
 
-```
-Description:
-  Provides ability to redact sensitive data from MSBuild binlogs (https://aka.ms/binlog-redactor).
+[docs\Readme.md](docs\Readme.md)
 
-Usage:
-  redact-binlog [options]
+# Setting up development
 
-Options:
-  -p, --password <password> (REQUIRED)  Password or other sensitive data to be redacted from binlog. Multiple options
-                                        are supported.
-  -i, --input <input>                   Input binary log file name. Or a directory to inspect for all existing binlogs.
-                                        If not specified current directory is assumed.
-  -o, --output <output>                 Output binary log file name. If not specified, replaces the input file in place
-                                        - overwrite option needs to be specified in such case.
-  -f, --overwrite                       Replace the output file if it already exists. Replace the input file if the
-                                        output file is not specified.
-  --dryrun                              Performs the operation in-memory and outputs what would be performed.
-  -r, --recurse                         Recurse given path (or current dir if none) for all binlogs. Applies only when
-                                        single input file is not specified.
-  --logsecrets                          Logs what secrets have been detected and replaced. This should be used only for
-                                        test/troubleshooting purposes!
-  -v, --verbosity <LEVEL>               Sets the verbosity level. Allowed values are q[uiet], m[inimal], n[ormal], and
-                                        diag[nostic]. [default: normal]
-  -?, -h, --help                        Show help and usage information
-  --version                             Show version information
-```
+## Prerequisities (until https://github.com/dotnet/msbuild/pull/9132 MSBuild changes are merged and published)
+
+* create `.offline-packages` folder in root of your enlistment
+* checkout the MSBuild on the branch from PR https://github.com/dotnet/msbuild/pull/9132
+* build, then `dotnet pack` the `Microsoft.Build`, `Microsoft.Build.Framework` and `Microsoft.NET.StringTools` packages and copy them to the `.offline-packages`
+* update the version of `Microsoft.Build` in `packages.props` - so that it matches the version you put into `.offline-packages`
+
+## Build
+
+* `dotnet build` in the root
+
+## Test run
+
+* place sample binlog into the build output folder (or any of it's subfolders)
+* `Microsoft.Build.BinlogRedactor.CLI.exe -p "some secret" -r`
+

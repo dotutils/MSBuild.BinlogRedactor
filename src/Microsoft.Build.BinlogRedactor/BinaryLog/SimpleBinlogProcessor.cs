@@ -1,84 +1,35 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Build.BinlogRedactor.Reporting;
+﻿using Microsoft.Build.BinlogRedactor.Reporting;
 using Microsoft.Build.Logging;
 
-namespace Microsoft.Build.BinlogRedactor.BinaryLog
+namespace Microsoft.Build.BinlogRedactor.BinaryLog;
+
+internal sealed class SimpleBinlogProcessor : IBinlogProcessor
 {
-    public interface ISensitiveDataProcessor
+    public Task<BinlogRedactorErrorCode> ProcessBinlog(
+        string inputFileName,
+        string outputFileName,
+        ISensitiveDataProcessor sensitiveDataProcessor,
+        CancellationToken cancellationToken)
     {
-        string ReplaceSensitiveData(string text);
-        bool IsSensitiveData(string text);
+        // Quick way:
+        //
+        BinaryLogReplayEventSource originalEventsSource = new BinaryLogReplayEventSource();
+        BinaryLogger bl = new BinaryLogger()
+        {
+            Parameters = $"LogFile={outputFileName}",
+        };
+        bl.Initialize(originalEventsSource);
+        originalEventsSource.NotificationsSourceCreated += notifications => notifications.StringReadDone += args =>
+            args.StringToBeUsed = sensitiveDataProcessor.ReplaceSensitiveData(args.OriginalString);
+        originalEventsSource.Replay(inputFileName, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
+        bl.Shutdown();
+
+        // TODO: error handling
+
+        return Task.FromResult(BinlogRedactorErrorCode.Success);
     }
 
-    internal sealed class SimpleSensitiveDataProcessor : ISensitiveDataProcessor
-    {
-        private readonly string[] _passwordsToRedact;
-
-        public SimpleSensitiveDataProcessor(string[] passwordsToRedact)
-        {
-            _passwordsToRedact = passwordsToRedact;
-        }
-
-        public string ReplaceSensitiveData(string text)
-        {
-            foreach (string pwd in _passwordsToRedact)
-            {
-                text = text.Replace(pwd, "*******", StringComparison.CurrentCulture);
-            }
-
-            return text;
-        }
-
-        public bool IsSensitiveData(string text)
-        {
-            return _passwordsToRedact.Any(pwd => text.Contains(pwd, StringComparison.CurrentCulture));
-        }
-    }
-
-    public interface IBinlogProcessor
-    {
-        Task<BinlogRedactorErrorCode> ProcessBinlog(
-            string inputFileName,
-            string outputFileName,
-            ISensitiveDataProcessor sensitiveDataProcessor,
-            CancellationToken cancellationToken);
-    }
-
-    internal sealed class SimpleBinlogProcessor : IBinlogProcessor
-    {
-        public Task<BinlogRedactorErrorCode> ProcessBinlog(
-            string inputFileName,
-            string outputFileName,
-            ISensitiveDataProcessor sensitiveDataProcessor,
-            CancellationToken cancellationToken)
-        {
-            // Quick way:
-            //
-            BinaryLogReplayEventSource originalEventsSource = new BinaryLogReplayEventSource();
-            BinaryLogger bl = new BinaryLogger()
-            {
-                Parameters = $"LogFile={outputFileName}",
-            };
-            bl.Initialize(originalEventsSource);
-            originalEventsSource.NotificationsSourceCreated += notifications => notifications.StringReadDone += args =>
-                args.StringToBeUsed = sensitiveDataProcessor.ReplaceSensitiveData(args.OriginalString);
-            originalEventsSource.Replay(inputFileName, cancellationToken);
-            cancellationToken.ThrowIfCancellationRequested();
-            bl.Shutdown();
-
-            // TODO: error handling
-
-            return Task.FromResult(BinlogRedactorErrorCode.Success);
-        }
-    }
 
     // do not start write output until any sensitive data is found
     ////internal class DefferedBinlogProcessor : IBinlogProcessor
