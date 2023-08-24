@@ -4,12 +4,10 @@ parameters:
      default: "0.0.3-alpha"
      type: string
 
-orbs:
-   win: circleci/windows@5.0
-
 jobs:
    build:
-     executor: win/default         
+     docker:
+      - image: mcr.microsoft.com/dotnet/sdk:8.0-preview
      steps:
       - checkout
       - run: 
