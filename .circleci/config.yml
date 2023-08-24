@@ -28,7 +28,7 @@ jobs:
       - run:
            name: "Copy artifacts"
            command: Copy-Item Microsoft.Build.BinlogRedactor.*.*nupkg .\nugets
-       - store_artifacts:
+      - store_artifacts:
            path: .\nugets
 
 workflows:
