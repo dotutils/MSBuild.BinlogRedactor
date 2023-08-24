@@ -102,7 +102,7 @@ namespace Microsoft.Build.BinlogRedactor
                     outputFile = args.OutputFileName + (hasMultipleFiles ? (fileOrderCount++).ToString("D2") : null);
                 }
 
-                var result = await RedactWorker(inputFile, outputFile, args, cancellationToken);
+                var result = await RedactWorker(inputFile, outputFile, args, cancellationToken).ConfigureAwait(false);
 
                 // TODO: should we continue if there was an error?
                 if (result != BinlogRedactorErrorCode.Success)
@@ -143,7 +143,7 @@ namespace Microsoft.Build.BinlogRedactor
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             var result = await _binlogProcessor.ProcessBinlog(inputFile, outputFile,
-                new SimpleSensitiveDataProcessor(args.TokensToRedact!), cancellationToken);
+                new SimpleSensitiveDataProcessor(args.TokensToRedact!), cancellationToken).ConfigureAwait(false);
 
             stopwatch.Stop();
             _logger.LogInformation("Redacting done. Duration: {duration}", stopwatch.Elapsed);

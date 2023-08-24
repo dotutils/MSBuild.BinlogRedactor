@@ -121,6 +121,6 @@ internal sealed class RedactBinlogCommandHandler : ICommandExecutor<RedactBinlog
             LogDetectedSecrets = args.LogDetectedSecrets
         };
 
-        return await _binlogRedactor.Execute(options, cancellationToken);
+        return await _binlogRedactor.Execute(options, cancellationToken).ConfigureAwait(false);
     }
 }

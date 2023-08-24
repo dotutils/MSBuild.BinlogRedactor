@@ -32,4 +32,8 @@
     <None Include="..\..\docs\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Microsoft.Build.BinlogRedactor.Tests" />
+  </ItemGroup>
+
 </Project>

@@ -38,7 +38,7 @@ artifacts/
 *.tmp
 *.tmp_proj
 *.log
-*.binlog
+# *.binlog
 *.ProjectImports.zip
 *.vspscc
 *.vssscc
