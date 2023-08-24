@@ -12,10 +12,10 @@ jobs:
       - checkout
       - run: 
           name: Restore
-          command: Invoke-Expression "dotnet restore"
+          command: dotnet restore
       - run: 
           name: Build
-          command: Invoke-Expression "dotnet build -p:PackageVersion=<<pipeline.parameters.artefact-version-prefix>>.$env:CIRCLE_BUILD_NUM --no-restore"
+          command: dotnet build -p:PackageVersion=<<pipeline.parameters.artefact-version-prefix>>.$env:CIRCLE_BUILD_NUM --no-restore
       - run:
           name: "Run Tests"
           command: dotnet test -v n --results-directory:test-results --test-adapter-path:. --no-build
@@ -24,10 +24,10 @@ jobs:
           when: always      
       - run:
           name: "Dotnet pack"
-          command: Invoke-Expression "dotnet pack --configuration Release -p:PackageVersion=<<pipeline.parameters.artefact-version-prefix>>.$env:CIRCLE_BUILD_NUM --no-restore"
+          command: dotnet pack --configuration Release -p:PackageVersion=<<pipeline.parameters.artefact-version-prefix>>.$env:CIRCLE_BUILD_NUM --no-restore
       - run:
            name: "Copy artifacts"
-           command: Copy-Item Microsoft.Build.BinlogRedactor.*.*nupkg .\nugets
+           command: cp Microsoft.Build.BinlogRedactor.*.*nupkg .\nugets
       - store_artifacts:
            path: .\nugets
 
