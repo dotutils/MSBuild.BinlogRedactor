@@ -27,9 +27,11 @@ jobs:
           command: dotnet pack --configuration Release -p:PackageVersion=<<pipeline.parameters.artefact-version-prefix>>-$CIRCLE_BUILD_NUM --no-restore
       - run:
            name: "Copy artifacts"
-           command: cp Microsoft.Build.BinlogRedactor.*.*nupkg .\nugets
+           command: |
+              mkdir nugets
+              find ./ -type f -name 'Microsoft.Build.BinlogRedactor.*.*nupkg' -exec cp '{}' nugets/ ';'
       - store_artifacts:
-           path: .\nugets
+           path: ./nugets
 
 workflows:
       version: 2
