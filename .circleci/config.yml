@@ -29,6 +29,12 @@ jobs:
            name: "List artifacts"
            command: find ./ -type f -name 'Microsoft.Build.BinlogRedactor.*.*nupkg'
       - run:
+           name: "List artifacts 2"
+           command: find ./ -type f -name '*BinlogRedactor*'
+      - run:
+           name: "get bash v"
+           command: bash --version
+      - run:
            name: "Copy artifacts"
            command: |
               mkdir nugets
