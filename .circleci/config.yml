@@ -26,6 +26,9 @@ jobs:
           name: "Dotnet pack"
           command: dotnet pack --configuration Release -p:PackageVersion=<<pipeline.parameters.artefact-version-prefix>>-$CIRCLE_BUILD_NUM --no-restore
       - run:
+           name: "List artifacts"
+           command: find ./ -type f -name 'Microsoft.Build.BinlogRedactor.*.*nupkg'
+      - run:
            name: "Copy artifacts"
            command: |
               mkdir nugets
