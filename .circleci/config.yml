@@ -15,7 +15,7 @@ jobs:
           command: dotnet restore
       - run: 
           name: Build
-          command: dotnet build -p:PackageVersion=<<pipeline.parameters.artefact-version-prefix>>.$env:CIRCLE_BUILD_NUM --no-restore
+          command: dotnet build -p:PackageVersion=<<pipeline.parameters.artefact-version-prefix>>-$CIRCLE_BUILD_NUM --no-restore
       - run:
           name: "Run Tests"
           command: dotnet test -v n --results-directory:test-results --test-adapter-path:. --no-build
@@ -24,7 +24,7 @@ jobs:
           when: always      
       - run:
           name: "Dotnet pack"
-          command: dotnet pack --configuration Release -p:PackageVersion=<<pipeline.parameters.artefact-version-prefix>>.$env:CIRCLE_BUILD_NUM --no-restore
+          command: dotnet pack --configuration Release -p:PackageVersion=<<pipeline.parameters.artefact-version-prefix>>-$CIRCLE_BUILD_NUM --no-restore
       - run:
            name: "Copy artifacts"
            command: cp Microsoft.Build.BinlogRedactor.*.*nupkg .\nugets
