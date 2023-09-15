@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Build.BinlogRedactor.BinaryLog;
 using Microsoft.Build.BinlogRedactor.IO;
 using Microsoft.Build.BinlogRedactor.Reporting;
 using Microsoft.Extensions.Logging;
-using Xunit.Abstractions;
 
 namespace Microsoft.Build.BinlogRedactor.Tests
 {
     [UsesVerify]
-    public class BinlogRedactorTests: IClassFixture<TestLoggerFactory>
+    public class BinlogRedactorTests : IClassFixture<TestLoggerFactory>
     {
         private readonly ILoggerFactory _loggerFactory;
 
@@ -25,11 +19,13 @@ namespace Microsoft.Build.BinlogRedactor.Tests
         [Fact]
         public async Task ExecuteIntegrationTest_NoOpRedactionShouldNotChangeFile()
         {
-            string outputFile = "output.binlog";
-            File.Delete(outputFile);
+            Environment.SetEnvironmentVariable("MSBUILDDETERMNISTICBINLOG", "1");
+
+            string outputFile = "console-redacted-01.binlog";
             string inputFile = Path.Combine("assets", "console.binlog");
 
             File.Exists(inputFile).Should().BeTrue();
+            File.Delete(outputFile);
 
             BinlogRedactorOptions options = new BinlogRedactorOptions(new string[] { Guid.NewGuid().ToString() })
             {
@@ -39,7 +35,9 @@ namespace Microsoft.Build.BinlogRedactor.Tests
             using FileDeletingScope fileDeletingScope = new FileDeletingScope(outputFile);
             BinlogRedactor binlogRedactor = new BinlogRedactor(_loggerFactory.CreateLogger<BinlogRedactor>(),
                 new PhysicalFileSystem(), new SimpleBinlogProcessor());
-            (await binlogRedactor.Execute(options).ConfigureAwait(false)).Should().Be(BinlogRedactorErrorCode.Success);
+
+            (await binlogRedactor.Execute(options).ConfigureAwait(false)).Should()
+                .Be(BinlogRedactorErrorCode.Success);
 
             File.Exists(outputFile).Should().BeTrue();
 
@@ -51,7 +49,7 @@ namespace Microsoft.Build.BinlogRedactor.Tests
         {
             if (first.Length != second.Length)
                 return false;
-
+            
             if (string.Equals(first.FullName, second.FullName, StringComparison.OrdinalIgnoreCase))
                 return true;
 
@@ -59,17 +57,20 @@ namespace Microsoft.Build.BinlogRedactor.Tests
             using FileStream fs2 = second.OpenRead();
             for (int i = 0; i < first.Length; i++)
             {
-                if (fs1.ReadByte() != fs2.ReadByte())
-                    return false;
+                byte b1 = (byte)fs1.ReadByte();
+                byte b2 = (byte)fs2.ReadByte();
+                if (b1 != b2)
+                    Assert.Fail($"Files ({first.Name}:{first.Length} and {second.Name}:{second.Length} sizes) are not equal at byte {i} ({b1} vs {b2})");
+                    //return false;
             }
-            
+
             return true;
         }
 
         [Fact]
         public async Task ExecuteIntegrationTest_RedactionShouldNotChangeOtherPartsOfFile()
         {
-            string outputFile = "output2.binlog";
+            string outputFile = "console-redacted-02.binlog";
             File.Delete(outputFile);
             string inputFile = Path.Combine("assets", "console.binlog");
 
@@ -77,17 +78,15 @@ namespace Microsoft.Build.BinlogRedactor.Tests
 
             BinlogRedactorOptions options = new BinlogRedactorOptions(new string[] { "restore", "console" })
             {
-                InputPath = inputFile,
-                OutputFileName = outputFile,
-                OverWrite = false,
+                InputPath = inputFile, OutputFileName = outputFile, OverWrite = false,
             };
             using FileDeletingScope fileDeletingScope = new FileDeletingScope(outputFile);
-            BinlogRedactor binlogRedactor = new BinlogRedactor(_loggerFactory.CreateLogger<BinlogRedactor>(), new PhysicalFileSystem(), new SimpleBinlogProcessor());
+            BinlogRedactor binlogRedactor = new BinlogRedactor(_loggerFactory.CreateLogger<BinlogRedactor>(),
+                new PhysicalFileSystem(), new SimpleBinlogProcessor());
             (await binlogRedactor.Execute(options).ConfigureAwait(false)).Should().Be(BinlogRedactorErrorCode.Success);
 
             File.Exists(outputFile).Should().BeTrue();
 
-            // This is currently failing as the redaction is not deterministic - it produces slightly different output each time
             await VerifyFile(outputFile).ConfigureAwait(false);
         }
 

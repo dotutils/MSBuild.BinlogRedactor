@@ -14,20 +14,29 @@ internal sealed class SimpleBinlogProcessor : IBinlogProcessor
         // Quick way:
         //
         BinaryLogReplayEventSource originalEventsSource = new BinaryLogReplayEventSource();
-        BinaryLogger bl = new BinaryLogger()
+        BuildEventArgsReader originalBuildEventsReader =
+            BinaryLogReplayEventSource.OpenBuildEventsReader(inputFileName);
+        BinaryLogger outputBinlog = new BinaryLogger()
         {
-            Parameters = $"LogFile={outputFileName}",
+            Parameters = $"LogFile={outputFileName};ProjectImports=Replay;ReplayInitialInfo",
         };
-        bl.Initialize(originalEventsSource);
-        originalEventsSource.NotificationsSourceCreated += notifications => notifications.StringReadDone += args =>
-            args.StringToBeUsed = sensitiveDataProcessor.ReplaceSensitiveData(args.OriginalString);
-        originalEventsSource.Replay(inputFileName, cancellationToken);
+
+        originalBuildEventsReader.StringReadDone += HandleStringRead;
+        originalBuildEventsReader.ArchiveFileEncountered += ((Action<StringReadEventArgs>)HandleStringRead).ToArchiveFileHandler();
+
+        outputBinlog.Initialize(originalEventsSource);
+        originalEventsSource.Replay(originalBuildEventsReader, cancellationToken);
         cancellationToken.ThrowIfCancellationRequested();
-        bl.Shutdown();
+        outputBinlog.Shutdown();
 
         // TODO: error handling
 
         return Task.FromResult(BinlogRedactorErrorCode.Success);
+
+        void HandleStringRead(StringReadEventArgs args)
+        {
+            args.StringToBeUsed = sensitiveDataProcessor.ReplaceSensitiveData(args.OriginalString);
+        }
     }
 
 
