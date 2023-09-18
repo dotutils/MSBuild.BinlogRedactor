@@ -1,7 +1,9 @@
-﻿using FluentAssertions;
+﻿using System.Runtime.CompilerServices;
+using FluentAssertions;
 using Microsoft.Build.BinlogRedactor.BinaryLog;
 using Microsoft.Build.BinlogRedactor.IO;
 using Microsoft.Build.BinlogRedactor.Reporting;
+using Microsoft.Build.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Build.BinlogRedactor.Tests
@@ -14,6 +16,48 @@ namespace Microsoft.Build.BinlogRedactor.Tests
         public BinlogRedactorTests(TestLoggerFactory testLoggerFactory)
         {
             _loggerFactory = testLoggerFactory;
+        }
+
+        static BinlogRedactorTests()
+        {
+            // TODO: this is a workaround until the MSBuild changes for reproducible binlogs
+            //  are published and we can use them in the tests (via dotnet sdk image).
+            // We have pre-created binlogs - but those are reproducible only for given OS/sdk
+            //  (mainly due to zipping).
+            ReplaceBinlogWithReplayed(Path.Combine("assets", "console.binlog"));
+            foreach (string binlogFile in GetBinlogFiles())
+            {
+                ReplaceBinlogWithReplayed(binlogFile);
+            }
+        }
+
+        private static void ReplaceBinlogWithReplayed(string binlogPath)
+        {
+            string replayedFile = binlogPath + "temp.binlog";
+
+            BinaryLogReplayEventSource replayEventSource = new BinaryLogReplayEventSource();
+            BinaryLogger outputBinlog = new BinaryLogger()
+            {
+                Parameters = $"LogFile={replayedFile};ProjectImports=Replay;ReplayInitialInfo",
+            };
+            outputBinlog.Initialize(replayEventSource);
+            replayEventSource.Replay(binlogPath);
+            outputBinlog.Shutdown();
+
+            new PhysicalFileSystem().ReplaceFile(replayedFile, binlogPath);
+        }
+
+        private static IEnumerable<string> GetBinlogFiles([CallerFilePath] string sourceFile = "")
+        {
+            if (string.IsNullOrEmpty(sourceFile))
+            {
+                return Enumerable.Empty<string>();
+            }
+
+            string dir = Path.Combine(Path.GetDirectoryName(sourceFile)!, VerifyInitialization.SnapshotsDirectory);
+
+            return Directory.EnumerateFiles(dir, "*.binlog",
+                new EnumerationOptions() { IgnoreInaccessible = true, RecurseSubdirectories = true });
         }
 
         [Fact]

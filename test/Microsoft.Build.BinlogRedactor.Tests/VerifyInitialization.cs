@@ -13,12 +13,14 @@ namespace Microsoft.Build.BinlogRedactor.Tests
 {
     internal static class VerifyInitialization
     {
+        internal const string SnapshotsDirectory = "Snapshots";
+
         [ModuleInitializer]
         public static void Initialize()
         {
             DerivePathInfo(
                 (_, _, type, method) => new(
-                    directory: "Snapshots",
+                    directory: SnapshotsDirectory,
                     typeName: type.Name,
                     methodName: method.Name));
 
