@@ -11,6 +11,9 @@ jobs:
      steps:
       - checkout
       - run: 
+          name: List checkouts
+          command: ls -R
+      - run: 
           name: Restore
           command: dotnet restore
       - run: 
