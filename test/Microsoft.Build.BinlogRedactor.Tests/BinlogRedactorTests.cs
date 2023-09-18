@@ -47,8 +47,9 @@ namespace Microsoft.Build.BinlogRedactor.Tests
 
         private static bool FilesAreBinaryEqual(FileInfo first, FileInfo second)
         {
-            if (first.Length != second.Length)
-                return false;
+            // Skip the shortcut test for easier troubleshooting of inequalitities
+            // if (first.Length != second.Length)
+            //     return false;
             
             if (string.Equals(first.FullName, second.FullName, StringComparison.OrdinalIgnoreCase))
                 return true;
