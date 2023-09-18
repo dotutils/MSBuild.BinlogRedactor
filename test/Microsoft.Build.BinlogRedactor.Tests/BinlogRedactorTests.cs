@@ -36,13 +36,18 @@ namespace Microsoft.Build.BinlogRedactor.Tests
             string replayedFile = binlogPath + "temp.binlog";
 
             BinaryLogReplayEventSource replayEventSource = new BinaryLogReplayEventSource();
+            BuildEventArgsReader buildEventsReader =
+                BinaryLogReplayEventSource.OpenBuildEventsReader(binlogPath);
             BinaryLogger outputBinlog = new BinaryLogger()
             {
                 Parameters = $"LogFile={replayedFile};ProjectImports=Replay;ReplayInitialInfo",
             };
+            // Subscribe empty action. But the mere subscribing forces unpacking and repacking of embedded files
+            buildEventsReader.ArchiveFileEncountered += arg => {};
             outputBinlog.Initialize(replayEventSource);
-            replayEventSource.Replay(binlogPath);
+            replayEventSource.Replay(buildEventsReader, CancellationToken.None);
             outputBinlog.Shutdown();
+            buildEventsReader.Dispose();
 
             new PhysicalFileSystem().ReplaceFile(replayedFile, binlogPath);
         }

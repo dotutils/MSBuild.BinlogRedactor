@@ -14,7 +14,7 @@ internal sealed class SimpleBinlogProcessor : IBinlogProcessor
         // Quick way:
         //
         BinaryLogReplayEventSource originalEventsSource = new BinaryLogReplayEventSource();
-        BuildEventArgsReader originalBuildEventsReader =
+        using BuildEventArgsReader originalBuildEventsReader =
             BinaryLogReplayEventSource.OpenBuildEventsReader(inputFileName);
         BinaryLogger outputBinlog = new BinaryLogger()
         {
