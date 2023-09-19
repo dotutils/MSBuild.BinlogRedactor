@@ -5,11 +5,9 @@ Since binlogs contain detailed build logs, they can happen to contain sensitive 
 Being able to provide binlogs is vital for builds troubleshooting. For those reasons it may be helpful to be able to redact sensitive data from binlogs - before providing them for investigation, or before automatically publishing them as build artifacts.
 
 ## Cracking proprietary format
-Rather then copying the internal implementation to the redacting tool, we want to reuse exposed reading/writing functionality.
+MSBuild Binlog is a properietary data format:
 
-Simplified overview of the MSBuild binlogs reading and writing functionality:
-
-![Binlog Replaying](replay.png)
+![Binlog Replaying](binlog-internals.png)
 
 The important parts for us:
 * Strings are deduplicated and stored separately. They are transparently added to the Build Events returned by the reader/event source
@@ -18,68 +16,137 @@ The important parts for us:
 * <a name="binary_inequality"></a>Binary logs were designed/tested for full reproducibility, but not necessarily for 1:1 binary equality (in some cases some empty structures can change to nulls etc.)
 * The binlog file is a GZip archive
 
-## Pluggable redaction
+## High level interface requirements for redacting
 
-We want to be able to provide ability to leverage implementation (or composite of implementations) for an interface similar to:
+### 10k foot view
+
+All we need is to be able to replace strings matching our criteria:
 
 ```csharp
-public interface ISensitiveDataProcessor
+Redactor.Redact(string binlogPath, Func<string, string> matchAndReplace);
+```
+
+### Considering embedded files 
+
+* Embedded files editing
+  * Path - string data
+  * Content - be able to edit as string data (for simplicity) or stream (for optimized access)
+
+```csharp
+public class ArchiveFile
+{
+    public StreamReader GetContentReader();
+    public string GetContent();
+}
+
+Func<ArchiveFile, ArchiveFile> RedactFile;
+```
+
+### Considering compression and unknown data offsets
+
+* Compression format imposes need to rewrite whole binlog (no in place edits)
+* Events do not have given length - size of the event is influenced by it's content (e.g. nullable fields). => skipping without encoding would require explicitly inserted offsets/sizes in binlog files - this would be at expense of size/perf of binlogs for other scenrios (writing/replaying)
+* Conclusion: It makes most sense to leverage Replay functionality for binlogs postprocessing
+
+![Binlog Replaying](replay.png)
+
+### Replay interface needs for redacting
+
+* We need to be able to learn about detected string and be able to edit it, before any build event containing such string is emited by the event source.
+   * Editing strings later would lead to emiting events with unwanted strings
+   * Editing strings within events would mean duplicate processing (as binlog has deduplicated strings - unlike build events)
+* We can either allow injecting processor, or emit events (the later allows more natural way of chaining multiple redactors)
+
+![Redaction plugging](redact-plug.png)
+
+The strings redacting interface (pseudocode):
+
+```csharp
+public event Action<StringReadEventArgs>? StringReadDone;
+
+public sealed class StringReadEventArgs : EventArgs
 {
     /// <summary>
-    /// Processes the given text and if needed, replaces sensitive data with a placeholder.
+    /// The original string that was read from the binary log.
     /// </summary>
-    string ReplaceSensitiveData(string text);
+    public string OriginalString { get; private set; }
+
+    /// <summary>
+    /// The adjusted string (or the original string of none subscriber replaced it) that will be used by the reader.
+    /// </summary>
+    public string StringToBeUsed { get; set; }
 }
 ```
 
-A simple implementation will be provided that is able to redact explicitly given string tokens.
-
-Future versions may add automatic highly identifiable secrets redactions, user paths detection and redaction etc.
-
-Future version might replace `string`s with `Span<char>`s for boosted performance. Support would however first need to be added to MSBuild binlog reading/writing modules, as otherwise we'd be actually hurting performance by the need to copy the internal buffers (as we'd need writable spans).
-
-## Options of performing the redaction
-We will not consider the option of copying and maintaining code interpreting the proprietary binlog format.
-
-Redaction would be exposed as similar:
+The files redacting interface (pseudocode):
 
 ```csharp
-public interface IBinlogProcessor
+public event Action<ArchiveFileEventArgs>? ArchiveFileEncountered;
+
+public sealed class ArchiveFileEventArgs : EventArgs
 {
-    /// <summary>
-    /// Passes all string data from the input file to the <see cref="ISensitiveDataProcessor"/> and writes the
-    /// resulting binlog file so that only the appropriate textual data is altered, while result is still valid binlog.
-    /// </summary>
-    Task<BinlogRedactorErrorCode> ProcessBinlog(
-        string inputFileName,
-        string outputFileName,
-        ISensitiveDataProcessor sensitiveDataProcessor,
-        CancellationToken cancellationToken);
+    public ArchiveFileEventArgs(ArchiveFile archiveFile);
+
+    public ArchiveFile ObtainArchiveFile();
+
+    public void SetResult(string resultPath, Stream resultStream);
+
+    public void SetResult(string resultPath, string resultContent);
+}
+
+public sealed class ArchiveFile
+{
+    public ArchiveFile(string fullPath, Stream contentStream)
+
+    public ArchiveFile(string fullPath, string content, Encoding? contentEncoding = null)
+
+    public static ArchiveFile From(ZipArchiveEntry entry);
+
+    public string FullPath { get; }
+    public Encoding Encoding { get; }
+    public bool CanUseReader { get; }
+    public bool CanUseString { get; }
+
+    public StreamReader GetContentReader();
+    public string GetContent();
 }
 ```
 
-### A) Running replay and editing data during replay
-For this option we'll need Microsoft.Build package to expose ability to inject strings replacing as they are read. Reader would then be further passing properly redacted data and those can be pumped through binlog replaying/writing pipeline.
+File content needs to be handleable via the simplified string editing handler as well:
 
-Advantages:
-* Easier for maintance (minimal exposure to the binlog format)
+```csharp
+// Redacting handler (external code)
+private void OnStringReadDone(StringReadEventArgs e)
+{
+    e.StringToBeUsed = e.StringToBeUsed.Replace("some-password", "******");
+}
 
-Disadvantages:
-* Requires serialization/deserialization of all events and writing new log in full even if no redactions happens during the process
-* Relies on Replay functionality not to change data on binary level  - some [current limitations](#binary_inequality) will need to be resolved first, and [stamping of replay time data](#stamping) needs to be opt-out-able.
+private void SubscribeToEvents()
+{
+    // Subscribing string redacting handler to string reads
+    reader.StringReadDone += OnStringReadDone;
+    // Subscribing string redacting handler to embedded file reads
+    reader.ArchiveFileEncountered += ((Action< StringReadEventArgs>)OnStringReadDone).ToArchiveFileHandler();
+}
+```
 
-### B) Wrapping and splitting the binlog reading stream
-For this option we'll need Microsoft.Build package to expose indications of start and end of reading of any data that might need redaction (deduplicated strings, embadded files). We'd pass wrapped `Stream` to the `BuildEventArgsReader`. Wrapper would be copying the input stream to output stream, redirectiong portion of writes that require redaction.
+## Code ownership
 
-Advantages:
-* Input binlog neads to be just read/deseriaized by the MSBuild code - no serialization is performed.
-* We can delay copying to output stream until we hit first data that are actually redacted.
-* [Binary inequalities](#binary_inequality) occuring during events deserialization->serialization do not apply to this approach.
+Proposal of what code should be first class citizen of MSBuild vs an external code.
 
-Disadvantages:
-* Higher implementation and maintanance cost - the logic need to mainly be aware and properly handle the archive format of the binlogs (which is technically implementation detail of binlogs).
+#### Strong case for MSBuild
 
-### Summary
+* De/serialization events reproducibility (rounds of serializing/deserializing should produce identical data). Needed for testability and evnet sourcing corectness (replay scenarios). Should be part of events definition
+* Support for determinisitic compression (greedy bufffering). Needed for testability. Should be possible to turn on for a binlog produced by build.
 
-* Both options will need adjustments/exposing in the MSBuild binlog reading/writing API - we might want to define and expose those upfront (to be able to deffer the decision or allow for alternative implementations)
-* Second option brings mainly possible performance benefit at the cost of implementation complexity. In order to speed up the creation/piloting/feedback-collection of first prototype, we decided for the first option.
+#### Suggested for MSBuild
+* OM of embedded files
+* Emiting string and archive file events from binlog event source
+* Ability to replay embedded files
+
+#### Suggested for MSBuild #2
+* The string and archive file events allow edting
+
+#### Suggested for external code
+* Library and CLI for binlogs postprocessing
+* Definition and implementation of redacting interface/libraries
