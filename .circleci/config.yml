@@ -9,6 +9,9 @@ jobs:
      docker:
       - image: mcr.microsoft.com/dotnet/sdk:8.0-preview
      steps:
+      - run:
+          name: install ssh and git
+          command: apt-get update && apt-get install -y openssh-client git
       - checkout
       - run: 
           name: Restore
