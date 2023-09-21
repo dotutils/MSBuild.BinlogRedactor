@@ -79,6 +79,7 @@ namespace Microsoft.Build.BinlogRedactor.Tests
             BinlogRedactorOptions options = new BinlogRedactorOptions(new string[] { Guid.NewGuid().ToString() })
             {
                 InputPath = inputFile, OutputFileName = outputFile, OverWrite = false,
+                DoNotAutodetectCommonPatterns = true,
             };
             // Will delete file at the end of function
             using FileDeletingScope fileDeletingScope = new FileDeletingScope(outputFile);
@@ -120,6 +121,8 @@ namespace Microsoft.Build.BinlogRedactor.Tests
         [Fact]
         public async Task ExecuteIntegrationTest_RedactionShouldNotChangeOtherPartsOfFile()
         {
+            Environment.SetEnvironmentVariable("MSBUILDDETERMNISTICBINLOG", "1");
+
             string outputFile = "console-redacted-02.binlog";
             File.Delete(outputFile);
             string inputFile = Path.Combine("assets", "console.binlog");
@@ -129,8 +132,10 @@ namespace Microsoft.Build.BinlogRedactor.Tests
             BinlogRedactorOptions options = new BinlogRedactorOptions(new string[] { "restore", "console" })
             {
                 InputPath = inputFile, OutputFileName = outputFile, OverWrite = false,
+                IdentifyReplacemenets = true,
+                // DoNotAutodetectCommonPatterns = true,
             };
-            using FileDeletingScope fileDeletingScope = new FileDeletingScope(outputFile);
+            //using FileDeletingScope fileDeletingScope = new FileDeletingScope(outputFile);
             BinlogRedactor binlogRedactor = new BinlogRedactor(_loggerFactory.CreateLogger<BinlogRedactor>(),
                 new PhysicalFileSystem(), new SimpleBinlogProcessor());
             (await binlogRedactor.Execute(options).ConfigureAwait(false)).Should().Be(BinlogRedactorErrorCode.Success);

@@ -26,6 +26,9 @@ namespace Microsoft.Build.BinlogRedactor
         public bool? Recurse { get; init; }
         public bool? LogDetectedSecrets { get; init; }
         public bool? SkipEmbeddedFiles { get; init; }
+        public bool? IdentifyReplacemenets { get; init; }
+        // TODO: this will need more detailed configurability. Plus we need pluggability.
+        public bool? DoNotAutodetectCommonPatterns { get; init; }
 
         BinlogRedactorOptions IOptions<BinlogRedactorOptions>.Value => this;
 

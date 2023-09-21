@@ -6,12 +6,17 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2D121ED4-955A-4973-81E5-2C4F8A6897FB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{9ABAC53A-E605-42A0-92C9-E17201CC242F}"
+	ProjectSection(SolutionItems) = preProject
+		src\Microsoft.Build.SensitiveDataDetector\UsernameDetector.cs = src\Microsoft.Build.SensitiveDataDetector\UsernameDetector.cs
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.BinlogRedactor", "src\Microsoft.Build.BinlogRedactor\Microsoft.Build.BinlogRedactor.csproj", "{19502C74-1099-4FF0-B931-D9B66FE560EA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.BinlogRedactor.Tests", "test\Microsoft.Build.BinlogRedactor.Tests\Microsoft.Build.BinlogRedactor.Tests.csproj", "{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.BinlogRedactor.CLI", "src\Microsoft.Build.BinlogRedactor.CLI\Microsoft.Build.BinlogRedactor.CLI.csproj", "{898FBC5B-06FE-47D5-A590-1342DB6ED597}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.SensitiveDataDetector", "src\Microsoft.Build.SensitiveDataDetector\Microsoft.Build.SensitiveDataDetector.csproj", "{24A966B8-795A-4820-8E02-71E3DC38E48A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +36,10 @@ Global
 		{898FBC5B-06FE-47D5-A590-1342DB6ED597}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{898FBC5B-06FE-47D5-A590-1342DB6ED597}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{898FBC5B-06FE-47D5-A590-1342DB6ED597}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24A966B8-795A-4820-8E02-71E3DC38E48A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24A966B8-795A-4820-8E02-71E3DC38E48A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24A966B8-795A-4820-8E02-71E3DC38E48A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24A966B8-795A-4820-8E02-71E3DC38E48A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +48,7 @@ Global
 		{19502C74-1099-4FF0-B931-D9B66FE560EA} = {2D121ED4-955A-4973-81E5-2C4F8A6897FB}
 		{CBA53C64-1199-4CF6-A036-7B0CE6DF5C14} = {9ABAC53A-E605-42A0-92C9-E17201CC242F}
 		{898FBC5B-06FE-47D5-A590-1342DB6ED597} = {2D121ED4-955A-4973-81E5-2C4F8A6897FB}
+		{24A966B8-795A-4820-8E02-71E3DC38E48A} = {2D121ED4-955A-4973-81E5-2C4F8A6897FB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C09E239D-C6E7-45EF-B66B-09DCB846F4DC}

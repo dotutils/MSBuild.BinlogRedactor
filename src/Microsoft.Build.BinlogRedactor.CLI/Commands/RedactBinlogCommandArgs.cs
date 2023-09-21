@@ -13,7 +13,9 @@ internal sealed class RedactBinlogCommandArgs
         bool? overWrite,
         bool? recurse,
         bool? logDetectedSecrets,
-        bool? skipEmbeddedFiles)
+        bool? skipEmbeddedFiles,
+        bool? identifyReplacemenets,
+        bool? doNotAutodetectCommonPatterns)
     {
         TokensToRedact = tokensToRedact;
         InputPath = inputPath;
@@ -23,6 +25,8 @@ internal sealed class RedactBinlogCommandArgs
         Recurse = recurse;
         LogDetectedSecrets = logDetectedSecrets;
         SkipEmbeddedFiles = skipEmbeddedFiles;
+        IdentifyReplacemenets = identifyReplacemenets;
+        DoNotAutodetectCommonPatterns = doNotAutodetectCommonPatterns;
     }
 
     public string[]? TokensToRedact { get; init; }
@@ -33,5 +37,8 @@ internal sealed class RedactBinlogCommandArgs
     public bool? Recurse { get; init; }
     public bool? LogDetectedSecrets { get; init; }
     public bool? SkipEmbeddedFiles { get; init; }
+    public bool? IdentifyReplacemenets { get; init; }
+    // TODO: this will need more detailed configurability. Plus we need pluggability.
+    public bool? DoNotAutodetectCommonPatterns { get; init; }
 }
 
