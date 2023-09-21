@@ -14,10 +14,9 @@ public class UsernameDetector : ISensitiveDataRedactor
 
     private const RegexOptions regexOptions =
                     RegexOptions.Compiled |
-                    RegexOptions.Singleline |
                     RegexOptions.CultureInvariant;
 
-    private const string winUsernamePathPattern = @".:\\Users\\(.+?)\\";
+    private const string winUsernamePathPattern = @".:\\[U|u]sers\\(.+?)(\\|\z)";
     private const string nixUsernamePathPattern = @"home\/(.+?)\/";
     private const string defaultReplacementText = @"REDACTED__Username";
     private readonly string replacementText;

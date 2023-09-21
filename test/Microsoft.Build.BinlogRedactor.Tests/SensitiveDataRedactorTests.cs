@@ -27,6 +27,19 @@ namespace Microsoft.Build.BinlogRedactor.Tests
         }
 
         [Fact]
+        public void UsernameDetector_RedactsUsernames_shortPath()
+        {
+            string replacement = "XXXXX";
+            UsernameDetector detector = new UsernameDetector(replacement);
+
+            detector.Redact("user1").Should().Be("user1");
+            detector.Redact(@"D:\Users\user1").Should().Be(@$"D:\Users\{replacement}");
+            detector.Redact("user1").Should().Be(replacement);
+            detector.Redact(@"D:\Users\user2").Should().Be(@"D:\Users\user2");
+            detector.Redact(@"D:\Users\user1").Should().Be(@$"D:\Users\{replacement}");
+        }
+
+        [Fact]
         public void PatternsDetector_RedactsDistinctSecretTypes()
         {
             string replacement = "XXXXX";
