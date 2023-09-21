@@ -25,6 +25,7 @@ namespace Microsoft.Build.BinlogRedactor
         public bool? OverWrite { get; init; }
         public bool? Recurse { get; init; }
         public bool? LogDetectedSecrets { get; init; }
+        public bool? SkipEmbeddedFiles { get; init; }
 
         BinlogRedactorOptions IOptions<BinlogRedactorOptions>.Value => this;
 

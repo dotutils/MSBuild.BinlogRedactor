@@ -11,6 +11,7 @@ public interface IBinlogProcessor
     Task<BinlogRedactorErrorCode> ProcessBinlog(
         string inputFileName,
         string outputFileName,
+        bool skipEmbeddedFiles,
         ISensitiveDataProcessor sensitiveDataProcessor,
         CancellationToken cancellationToken);
 }

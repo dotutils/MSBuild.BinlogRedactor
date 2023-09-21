@@ -12,7 +12,8 @@ internal sealed class RedactBinlogCommandArgs
         bool? dryRun,
         bool? overWrite,
         bool? recurse,
-        bool? logDetectedSecrets)
+        bool? logDetectedSecrets,
+        bool? skipEmbeddedFiles)
     {
         TokensToRedact = tokensToRedact;
         InputPath = inputPath;
@@ -21,6 +22,7 @@ internal sealed class RedactBinlogCommandArgs
         OverWrite = overWrite;
         Recurse = recurse;
         LogDetectedSecrets = logDetectedSecrets;
+        SkipEmbeddedFiles = skipEmbeddedFiles;
     }
 
     public string[]? TokensToRedact { get; init; }
@@ -30,5 +32,6 @@ internal sealed class RedactBinlogCommandArgs
     public bool? OverWrite { get; init; }
     public bool? Recurse { get; init; }
     public bool? LogDetectedSecrets { get; init; }
+    public bool? SkipEmbeddedFiles { get; init; }
 }
 

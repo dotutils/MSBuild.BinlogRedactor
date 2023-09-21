@@ -61,6 +61,11 @@ internal sealed class RedactBinlogCommand : ExecutableCommand<RedactBinlogComman
         Description = "Logs what secrets have been detected and replaced. This should be used only for test/troubleshooting purposes!",
     };
 
+    private readonly Option<bool> _skipEmbeddedFilesOption = new(new[] { "--skip-embedded-files" })
+    {
+        Description = "Binlog embedded files will not be processed by the redactor.",
+    };
+
     public RedactBinlogCommand() :
         base(CommandName, "Provides ability to redact sensitive data from MSBuild binlogs (https://aka.ms/binlog-redactor).")
     {
@@ -71,6 +76,7 @@ internal sealed class RedactBinlogCommand : ExecutableCommand<RedactBinlogComman
         AddOption(_dryRunOption);
         AddOption(_recurseOption);
         AddOption(_logSecretsOption);
+        AddOption(_skipEmbeddedFilesOption);
     }
 
     protected internal override RedactBinlogCommandArgs ParseContext(ParseResult parseResult)
@@ -82,7 +88,8 @@ internal sealed class RedactBinlogCommand : ExecutableCommand<RedactBinlogComman
             parseResult.GetValueForOption(_dryRunOption),
             parseResult.GetValueForOption(_overWriteOption),
             parseResult.GetValueForOption(_recurseOption),
-            parseResult.GetValueForOption(_logSecretsOption));
+            parseResult.GetValueForOption(_logSecretsOption),
+            parseResult.GetValueForOption(_skipEmbeddedFilesOption));
     }
 }
 
@@ -118,7 +125,8 @@ internal sealed class RedactBinlogCommandHandler : ICommandExecutor<RedactBinlog
             DryRun = args.DryRun,
             OverWrite = args.OverWrite,
             Recurse = args.Recurse,
-            LogDetectedSecrets = args.LogDetectedSecrets
+            LogDetectedSecrets = args.LogDetectedSecrets,
+            SkipEmbeddedFiles = args.SkipEmbeddedFiles,
         };
 
         return await _binlogRedactor.Execute(options, cancellationToken).ConfigureAwait(false);

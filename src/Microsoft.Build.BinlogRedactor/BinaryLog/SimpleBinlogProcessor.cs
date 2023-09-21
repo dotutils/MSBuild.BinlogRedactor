@@ -8,6 +8,7 @@ internal sealed class SimpleBinlogProcessor : IBinlogProcessor
     public Task<BinlogRedactorErrorCode> ProcessBinlog(
         string inputFileName,
         string outputFileName,
+        bool skipEmbeddedFiles,
         ISensitiveDataProcessor sensitiveDataProcessor,
         CancellationToken cancellationToken)
     {
@@ -22,7 +23,11 @@ internal sealed class SimpleBinlogProcessor : IBinlogProcessor
         };
 
         originalBuildEventsReader.StringReadDone += HandleStringRead;
-        originalBuildEventsReader.ArchiveFileEncountered += ((Action<StringReadEventArgs>)HandleStringRead).ToArchiveFileHandler();
+        if (!skipEmbeddedFiles)
+        {
+            originalBuildEventsReader.ArchiveFileEncountered +=
+                ((Action<StringReadEventArgs>)HandleStringRead).ToArchiveFileHandler();
+        }
 
         outputBinlog.Initialize(originalEventsSource);
         originalEventsSource.Replay(originalBuildEventsReader, cancellationToken);

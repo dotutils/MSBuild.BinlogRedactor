@@ -1,6 +1,6 @@
 # Usage help
 
-[docs\Readme.md](docs\Readme.md)
+[docs/Readme.md](docs/Readme.md)
 
 # Setting up development
 

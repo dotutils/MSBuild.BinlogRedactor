@@ -143,6 +143,7 @@ namespace Microsoft.Build.BinlogRedactor
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             var result = await _binlogProcessor.ProcessBinlog(inputFile, outputFile,
+                args.SkipEmbeddedFiles ?? false,
                 new SimpleSensitiveDataProcessor(args.TokensToRedact!), cancellationToken).ConfigureAwait(false);
 
             stopwatch.Stop();
