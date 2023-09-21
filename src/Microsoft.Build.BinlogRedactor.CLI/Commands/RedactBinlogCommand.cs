@@ -24,8 +24,8 @@ internal sealed class RedactBinlogCommand : ExecutableCommand<RedactBinlogComman
 
     private readonly Option<string[]> _passwordsToRedactOption = new(new [] {"--password", "-p"})
     {
-        Description = "Password or other sensitive data to be redacted from binlog. Multiple options are supported.",
-        Arity = new ArgumentArity(1, 1000),
+        Description = "Password or other sensitive data to be redacted from binlog. Multiple options are supported. Has to be specified if common patterns opted out with --no-common-patterns.",
+        Arity = new ArgumentArity(0, 1000),
         IsRequired = true,
     };
 
@@ -66,6 +66,17 @@ internal sealed class RedactBinlogCommand : ExecutableCommand<RedactBinlogComman
         Description = "Binlog embedded files will not be processed by the redactor.",
     };
 
+    private readonly Option<bool> _identifyReplacemenetsOption = new(new[] { "--identify-replacements" })
+    {
+        Description = "If set - the redacted values will be distinguishable (e.g. 'REDACTED__Gcp-Token', 'REDACTED__USERNAME') instead all same ('*******')",
+    };
+
+    // TODO: this will need more detailed configurability. Plus we need pluggability.
+    private readonly Option<bool> _doNotAutodetectCommonPatternsOption = new(new[] { "--no-common-patterns" })
+    {
+        Description = "If set - redactor will not attempt to autodetect possible sensitive data based (username, tokens/secrets with known formats, etc.). Specific passwords to redact must be specified in such case (with -p)",
+    };
+
     public RedactBinlogCommand() :
         base(CommandName, "Provides ability to redact sensitive data from MSBuild binlogs (https://aka.ms/binlog-redactor).")
     {
@@ -77,6 +88,8 @@ internal sealed class RedactBinlogCommand : ExecutableCommand<RedactBinlogComman
         AddOption(_recurseOption);
         AddOption(_logSecretsOption);
         AddOption(_skipEmbeddedFilesOption);
+        AddOption(_identifyReplacemenetsOption);
+        AddOption(_doNotAutodetectCommonPatternsOption);
     }
 
     protected internal override RedactBinlogCommandArgs ParseContext(ParseResult parseResult)
@@ -89,7 +102,10 @@ internal sealed class RedactBinlogCommand : ExecutableCommand<RedactBinlogComman
             parseResult.GetValueForOption(_overWriteOption),
             parseResult.GetValueForOption(_recurseOption),
             parseResult.GetValueForOption(_logSecretsOption),
-            parseResult.GetValueForOption(_skipEmbeddedFilesOption));
+            parseResult.GetValueForOption(_skipEmbeddedFilesOption),
+            parseResult.GetValueForOption(_identifyReplacemenetsOption),
+            parseResult.GetValueForOption(_doNotAutodetectCommonPatternsOption)
+            );
     }
 }
 
@@ -111,14 +127,14 @@ internal sealed class RedactBinlogCommandHandler : ICommandExecutor<RedactBinlog
         RedactBinlogCommandArgs args,
         CancellationToken cancellationToken)
     {
-        if (args.TokensToRedact == null || args.TokensToRedact.Length == 0)
+        if ((args.DoNotAutodetectCommonPatterns ?? false) && (args.TokensToRedact == null || args.TokensToRedact.Length == 0))
         {
             throw new BinlogRedactorException(
                 "At least one password to redact must be specified.",
                 BinlogRedactorErrorCode.NotEnoughInformationToProceed);
         }
 
-        BinlogRedactorOptions options = new(args.TokensToRedact)
+        BinlogRedactorOptions options = new(args.TokensToRedact ?? Array.Empty<string>())
         {
             InputPath = args.InputPath,
             OutputFileName = args.OutputFileName,
@@ -127,6 +143,8 @@ internal sealed class RedactBinlogCommandHandler : ICommandExecutor<RedactBinlog
             Recurse = args.Recurse,
             LogDetectedSecrets = args.LogDetectedSecrets,
             SkipEmbeddedFiles = args.SkipEmbeddedFiles,
+            IdentifyReplacemenets = args.IdentifyReplacemenets,
+            DoNotAutodetectCommonPatterns = args.DoNotAutodetectCommonPatterns,
         };
 
         return await _binlogRedactor.Execute(options, cancellationToken).ConfigureAwait(false);

@@ -59,14 +59,14 @@ namespace Microsoft.Build.BinlogRedactor
                     BinlogRedactorErrorCode.NotYetImplementedScenario);
             }
 
-            if (args.TokensToRedact == null || args.TokensToRedact.Length == 0)
+            if ((args.DoNotAutodetectCommonPatterns ?? false) && (args.TokensToRedact == null || args.TokensToRedact.Length == 0))
             {
                 throw new BinlogRedactorException(
-                    "At least one token to redact must be specified.",
+                    "At least one token to redact must be specified when autodetection of common patterns is opted out.",
                     BinlogRedactorErrorCode.NotEnoughInformationToProceed);
             }
 
-            if (args.TokensToRedact.Any(s => s.Length <= 3))
+            if (args.TokensToRedact?.Any(s => s.Length <= 3) ?? false)
             {
                 throw new BinlogRedactorException(
                     "Passwords to redact must be nonempty and at least 4 characters long.",
@@ -142,9 +142,17 @@ namespace Microsoft.Build.BinlogRedactor
 
             Stopwatch stopwatch = Stopwatch.StartNew();
 
+            ISensitiveDataProcessor sensitiveDataProcessor = new SimpleSensitiveDataProcessor(args.TokensToRedact, args.IdentifyReplacemenets ?? false);
+            if (!(args.DoNotAutodetectCommonPatterns ?? false))
+            {
+                sensitiveDataProcessor = new CompositeSensitiveDataProcessor(
+                    sensitiveDataProcessor,
+                    new AutoDetectedSensitiveDataProcessor(args.IdentifyReplacemenets ?? false));
+            }
+
             var result = await _binlogProcessor.ProcessBinlog(inputFile, outputFile,
                 args.SkipEmbeddedFiles ?? false,
-                new SimpleSensitiveDataProcessor(args.TokensToRedact!), cancellationToken).ConfigureAwait(false);
+                sensitiveDataProcessor, cancellationToken).ConfigureAwait(false);
 
             stopwatch.Stop();
             _logger.LogInformation("Redacting done. Duration: {duration}", stopwatch.Elapsed);

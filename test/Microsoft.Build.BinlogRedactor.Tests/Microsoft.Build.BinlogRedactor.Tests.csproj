@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.Build.BinlogRedactor\Microsoft.Build.BinlogRedactor.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.Build.SensitiveDataDetector\Microsoft.Build.SensitiveDataDetector.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +27,8 @@
     <PackageReference Include="Verify.DiffPlex" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+
+    <PackageReference Include="Microsoft.Build" />
   </ItemGroup>
 
   <ItemGroup>
