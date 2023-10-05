@@ -24,11 +24,12 @@ namespace Microsoft.Build.BinlogRedactor.Tests
             //  are published and we can use them in the tests (via dotnet sdk image).
             // We have pre-created binlogs - but those are reproducible only for given OS/sdk
             //  (mainly due to zipping).
-            ReplaceBinlogWithReplayed(Path.Combine("assets", "console.binlog"));
             foreach (string binlogFile in GetBinlogFiles())
             {
                 ReplaceBinlogWithReplayed(binlogFile);
             }
+            // Let's skip this heck for no-op redaction as we test deserialized equality.
+            // ReplaceBinlogWithReplayed(Path.Combine("assets", "console.binlog"));
         }
 
         private static void ReplaceBinlogWithReplayed(string binlogPath)
@@ -40,7 +41,7 @@ namespace Microsoft.Build.BinlogRedactor.Tests
                 BinaryLogReplayEventSource.OpenBuildEventsReader(binlogPath);
             BinaryLogger outputBinlog = new BinaryLogger()
             {
-                Parameters = $"LogFile={replayedFile};ProjectImports=Replay;ReplayInitialInfo",
+                Parameters = $"LogFile={replayedFile};ProjectImports=Replay;OmitInitialInfo",
             };
             // Subscribe empty action. But the mere subscribing forces unpacking and repacking of embedded files
             buildEventsReader.ArchiveFileEncountered += arg => {};
@@ -91,31 +92,10 @@ namespace Microsoft.Build.BinlogRedactor.Tests
 
             File.Exists(outputFile).Should().BeTrue();
 
-            // This is currently failing as the redaction does not preserve content of the original file
-            FilesAreBinaryEqual(new FileInfo(inputFile), new FileInfo(outputFile)).Should().BeTrue();
-        }
+            BinlogComparer.AssertBinlogsHaveEqualContent(inputFile, outputFile);
 
-        private static bool FilesAreBinaryEqual(FileInfo first, FileInfo second)
-        {
-            // Skipping shortcut test - so that we can better troubleshoot failures.
-            // if (first.Length != second.Length)
-            //    return false;
-            
-            if (string.Equals(first.FullName, second.FullName, StringComparison.OrdinalIgnoreCase))
-                return true;
-
-            using FileStream fs1 = first.OpenRead();
-            using FileStream fs2 = second.OpenRead();
-            for (int i = 0; i < first.Length; i++)
-            {
-                byte b1 = (byte)fs1.ReadByte();
-                byte b2 = (byte)fs2.ReadByte();
-                if (b1 != b2)
-                    Assert.Fail($"Files ({first.Name}:{first.Length} and {second.Name}:{second.Length} sizes) are not equal at byte {i} ({b1} vs {b2})");
-                    //return false;
-            }
-
-            return true;
+            // This check will fail on CI unless we create the binlog on same runtime.
+            // BinlogComparer.AssertFilesAreBinaryEqual(inputFile, outputFile);
         }
 
         [Fact]
