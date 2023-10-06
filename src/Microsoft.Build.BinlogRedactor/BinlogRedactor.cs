@@ -133,7 +133,7 @@ namespace Microsoft.Build.BinlogRedactor
                 outputFile = Path.GetFileName(Path.GetTempFileName()) + ".binlog";
             }
 
-            if ((args.OverWrite ?? false) && _fileSystem.FileExists(outputFile))
+            if (!(args.OverWrite ?? false) && _fileSystem.FileExists(outputFile))
             {
                 throw new BinlogRedactorException(
                     $"Requested output file [{outputFile}] exists, while overwrite option was not specified.",
