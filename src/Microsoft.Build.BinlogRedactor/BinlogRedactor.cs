@@ -6,6 +6,7 @@ using Microsoft.Build.BinlogRedactor.BinaryLog;
 using Microsoft.Build.BinlogRedactor.IO;
 using Microsoft.Build.BinlogRedactor.Reporting;
 using Microsoft.Build.BinlogRedactor.Utils;
+using Microsoft.Build.SensitiveDataDetector;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -142,13 +143,17 @@ namespace Microsoft.Build.BinlogRedactor
 
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            ISensitiveDataProcessor sensitiveDataProcessor = new SimpleSensitiveDataProcessor(args.TokensToRedact, args.IdentifyReplacemenets ?? false);
+            SensitiveDataKind sensitiveDataKind = SensitiveDataKind.ExplicitSecrets;
             if (!(args.DoNotAutodetectCommonPatterns ?? false))
             {
-                sensitiveDataProcessor = new CompositeSensitiveDataProcessor(
-                    sensitiveDataProcessor,
-                    new AutoDetectedSensitiveDataProcessor(args.IdentifyReplacemenets ?? false));
+                sensitiveDataKind |= SensitiveDataKind.CommonSecrets;
+                sensitiveDataKind |= SensitiveDataKind.Username;
             }
+
+            ISensitiveDataProcessor sensitiveDataProcessor = new SensitiveDataProcessor(
+                sensitiveDataKind,
+                args.IdentifyReplacemenets ?? false,
+                args.TokensToRedact);
 
             var result = await _binlogProcessor.ProcessBinlog(inputFile, outputFile,
                 args.SkipEmbeddedFiles ?? false,

@@ -16,12 +16,13 @@ internal static class CredentialsPatterns
     {
         ("Google-API-Key", @"AIza[A-Za-z0-9_\\\-]{35}"),
         ("Slack-Token", @"xox[pbar]\-[A-Za-z0-9]"),
+        ("Azure-AD-Identity-Password", @"[0-9A-Za-z-_~.]{3}7Q~[0-9A-Za-z-_~.]{31}\b|\b[0-9A-Za-z-_~.]{3}8Q~[0-9A-Za-z-_~.]{34}"),
         //("Generic-Secret", @"(key|token|sig|secret|signature|password|passwd|pwd|android:value)[^a-zA-Z0-9]"),
         ("Email", @"[a-zA-Z0-9-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+"),
     };
 }
 
-public class PatternsDetector : ISensitiveDataRedactor
+internal class PatternsDetector : ISensitiveDataRedactor
 {
     private const RegexOptions regexOptions =
         RegexOptions.Compiled |
@@ -37,7 +38,7 @@ public class PatternsDetector : ISensitiveDataRedactor
         if (usePredefined)
         {
             _patterns = CredentialsPatterns.Patterns
-                .Select(p => (new Regex(p.regex, regexOptions), string.IsNullOrEmpty(replacement) ? $"REDACTED__{p.patternName}" : replacement))
+                .Select(p => (new Regex(p.regex, regexOptions), string.IsNullOrEmpty(replacement) ? $"REDACTED__{p.patternName}" : replacement!))
                 .ToList();
         }
         else

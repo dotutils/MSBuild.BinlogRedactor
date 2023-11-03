@@ -5,12 +5,12 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Build.SensitiveDataDetector;
 
-public class UsernameDetector : ISensitiveDataRedactor
+internal class UsernameDetector : ISensitiveDataRedactor
 {
     public UsernameDetector() : this(defaultReplacementText) { }
 
     public UsernameDetector(string? replacementText) => this.replacementText =
-        string.IsNullOrEmpty(replacementText) ? defaultReplacementText : replacementText;
+        string.IsNullOrEmpty(replacementText) ? defaultReplacementText : replacementText!;
 
     private const RegexOptions regexOptions =
                     RegexOptions.Compiled |

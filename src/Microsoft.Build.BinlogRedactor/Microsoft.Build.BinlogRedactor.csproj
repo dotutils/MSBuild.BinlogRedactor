@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -7,10 +7,11 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <!-- packaging properties -->
-    <PackageVersion>0.0.2-alpha</PackageVersion>
+    <PackageVersion>0.0.3-alpha</PackageVersion>
     <Title>BinlogRedactor library</Title>
     <PackageId>MSBuild.BinlogRedactor</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <!-- SourceLink properties -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

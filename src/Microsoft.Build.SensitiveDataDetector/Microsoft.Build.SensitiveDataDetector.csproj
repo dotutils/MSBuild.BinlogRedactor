@@ -1,15 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net472;net7.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <!-- packaging properties -->
-    <PackageVersion>0.0.2-alpha</PackageVersion>
+    <PackageVersion>0.0.3-alpha</PackageVersion>
     <Title>BinlogRedactor sensitive data autodetection library</Title>
     <PackageId>MSBuild.BinlogRedactor.SensitiveDataDetector</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <!-- SourceLink properties -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

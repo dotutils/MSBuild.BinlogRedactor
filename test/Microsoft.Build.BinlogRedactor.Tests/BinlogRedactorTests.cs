@@ -67,10 +67,35 @@ namespace Microsoft.Build.BinlogRedactor.Tests
         }
 
         [Fact]
+        public void TestBinaryWriterOff()
+        {
+            MemoryStream stream = new();
+            BinaryWriter writer = new(stream);
+            //writer.Write(1);
+            writer.Write("test");
+            writer.Write(1);
+            writer.Write("test");
+            writer.Write("test");
+            writer.Write("test");
+            writer.Write("test");
+            writer.Write("test");
+            //writer.Write7BitEncodedInt(2);
+            //writer.Write();
+
+            writer.Flush();
+
+            stream.Position = 0;
+
+            BinaryReader reader = new(stream);
+            //            reader.ReadString().Should().Be("test");
+            reader.ReadInt64();//.Should().Be(4);
+            reader.ReadInt64();
+            reader.ReadInt64();
+        }
+
+        [Fact]
         public async Task ExecuteIntegrationTest_NoOpRedactionShouldNotChangeFile()
         {
-            Environment.SetEnvironmentVariable("MSBUILDDETERMNISTICBINLOG", "1");
-
             string outputFile = "console-redacted-01.binlog";
             string inputFile = Path.Combine("assets", "console.binlog");
 
@@ -101,8 +126,6 @@ namespace Microsoft.Build.BinlogRedactor.Tests
         [Fact]
         public async Task ExecuteIntegrationTest_RedactionShouldNotChangeOtherPartsOfFile()
         {
-            Environment.SetEnvironmentVariable("MSBUILDDETERMNISTICBINLOG", "1");
-
             string outputFile = "console-redacted-02.binlog";
             File.Delete(outputFile);
             string inputFile = Path.Combine("assets", "console.binlog");

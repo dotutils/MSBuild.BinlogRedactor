@@ -19,7 +19,7 @@ internal sealed class SimpleBinlogProcessor : IBinlogProcessor
             BinaryLogReplayEventSource.OpenBuildEventsReader(inputFileName);
         BinaryLogger outputBinlog = new BinaryLogger()
         {
-            Parameters = $"LogFile={outputFileName};ProjectImports=Replay;OmitInitialInfo",
+            Parameters = $"LogFile={outputFileName};OmitInitialInfo",
         };
 
         originalBuildEventsReader.StringReadDone += HandleStringRead;

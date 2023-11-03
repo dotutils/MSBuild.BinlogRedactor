@@ -33,60 +33,19 @@ internal sealed class SimpleSensitiveDataProcessor : ISensitiveDataProcessor
     }
 }
 
-
-internal sealed class AutoDetectedSensitiveDataProcessor : ISensitiveDataProcessor
+internal sealed class SensitiveDataProcessor : ISensitiveDataProcessor
 {
-    private readonly ISensitiveDataRedactor[] _redactors;
+    private readonly ISensitiveDataRedactor _redactor;
 
-    public AutoDetectedSensitiveDataProcessor(bool identifyReplacements)
+    public SensitiveDataProcessor(
+        SensitiveDataKind sensitiveDataKind,
+        bool identifyReplacements,
+        string[]? secretsToRedact = null)
     {
-        _redactors = new ISensitiveDataRedactor[]
-        {
-            new UsernameDetector(identifyReplacements ? null : SimpleSensitiveDataProcessor.DefaultReplacementPattern),
-            new PatternsDetector(true, identifyReplacements ? null : SimpleSensitiveDataProcessor.DefaultReplacementPattern)
-        };
+        _redactor = SensitiveDataDetectorFactory.GetSecretsDetector(sensitiveDataKind, identifyReplacements, secretsToRedact);
     }
 
-    public string ReplaceSensitiveData(string text)
-    {
-        foreach (ISensitiveDataRedactor sensitiveDataRedactor in _redactors)
-        {
-            text = sensitiveDataRedactor.Redact(text);
-        }
+    public string ReplaceSensitiveData(string text) => _redactor.Redact(text);
 
-        return text;
-    }
-
-    public bool IsSensitiveData(string text)
-    {
-        // TODO: Optimize or remove this method - it's not used anywhere
-        return ReplaceSensitiveData(text) != text;
-    }
+    public bool IsSensitiveData(string text) => _redactor.Redact(text) != text;
 }
-
-internal sealed class CompositeSensitiveDataProcessor : ISensitiveDataProcessor
-{
-    private readonly ISensitiveDataProcessor[] _processors;
-
-    public CompositeSensitiveDataProcessor(params ISensitiveDataProcessor[] processors)
-    {
-        _processors = processors;
-    }
-
-    public string ReplaceSensitiveData(string text)
-    {
-        foreach (ISensitiveDataProcessor processor in _processors)
-        {
-            text = processor.ReplaceSensitiveData(text);
-        }
-
-        return text;
-    }
-
-    public bool IsSensitiveData(string text)
-    {
-        return _processors.Any(processor => processor.IsSensitiveData(text));
-    }
-}
-
-//TODO: pluggable sensitive data redactor - via specifying library and type name
