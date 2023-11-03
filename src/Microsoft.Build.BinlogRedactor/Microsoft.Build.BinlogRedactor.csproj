@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <!-- packaging properties -->
-    <PackageVersion>0.0.3-alpha</PackageVersion>
+    <PackageVersion>0.0.4-beta</PackageVersion>
     <Title>BinlogRedactor library</Title>
     <PackageId>MSBuild.BinlogRedactor</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Microsoft.Build.BinlogRedactor.Tests" />
+    <InternalsVisibleTo Include="Microsoft.Build.BinlogRedactor.Tests" PublicKey="0024000004800000940000000602000000240000525341310004000001000100c9581bcd562d939d6abd4ac39085dc260d55211ca7ff5b2795f2745d10f24f0c70fcf212dba68828ff4f28c59bf2415236d9a3f081243f04491e0f0afbf960200eb173dfef8f086b847080eca24620c33211c52fe5d272ca62097266f9fef9f1605880d35e13d45159f32975eee5d6d485edf625ef72bcf9d45e7061478d50a8" />
   </ItemGroup>
 
   <ItemGroup>
