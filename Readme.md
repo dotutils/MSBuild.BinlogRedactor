@@ -11,7 +11,7 @@
 ## Test run of the app
 
 * place sample binlog into the build output folder (or any of it's subfolders)
-* `Microsoft.Build.BinlogRedactor.CLI.exe -p "some secret" -r`
+* `DotUtils.MsBuild.BinlogRedactor.CLI.exe -p "some secret" -r`
 
 ## Unit/Integration tests
 
