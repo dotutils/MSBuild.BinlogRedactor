@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net472;net7.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <!-- packaging properties -->
-    <PackageVersion>0.0.5</PackageVersion>
+    <PackageVersion>0.0.6</PackageVersion>
     <Title>BinlogRedactor sensitive data autodetection library</Title>
     <PackageId>MSBuild.BinlogRedactor.SensitiveDataDetector</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
