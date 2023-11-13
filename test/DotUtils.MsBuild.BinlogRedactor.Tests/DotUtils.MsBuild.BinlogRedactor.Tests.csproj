@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Microsoft.Build.BinlogRedactor\Microsoft.Build.BinlogRedactor.csproj" />
-    <ProjectReference Include="..\..\src\Microsoft.Build.SensitiveDataDetector\Microsoft.Build.SensitiveDataDetector.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="xunit.runner.console">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -35,6 +30,11 @@
     <Compile Remove="Snapshots\**\*" />
     <Content Include="Snapshots\**\*" />
     <None Include="Snapshots\**\*" CopyToOutputDirectory="Never" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DotUtils.MsBuild.BinlogRedactor\DotUtils.MsBuild.BinlogRedactor.csproj" />
+    <ProjectReference Include="..\..\src\DotUtils.MsBuild.SensitiveDataDetector\DotUtils.MsBuild.SensitiveDataDetector.csproj" />
   </ItemGroup>
 
   <ItemGroup>

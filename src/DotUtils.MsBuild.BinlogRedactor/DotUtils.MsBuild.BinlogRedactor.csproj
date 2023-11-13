@@ -1,19 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
-    <!-- tool packing properties -->
     <IsPackable>true</IsPackable>
-    <PackAsTool>true</PackAsTool>
-    <ToolCommandName>redact-binlog</ToolCommandName>
     <!-- packaging properties -->
-    <PackageVersion>0.0.4-beta</PackageVersion>
-    <Title>BinlogRedactor dotnet tool</Title>
-    <PackageId>MSBuild.BinlogRedactor.CLI</PackageId>
+    <PackageVersion>0.0.5-beta</PackageVersion>
+    <Title>BinlogRedactor library</Title>
+    <PackageId>DotUtils.MsBuild.BinlogRedactor</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <!-- SourceLink properties -->
@@ -24,17 +20,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Build" />
+
     <PackageReference Include="Microsoft.SourceLink.GitHub">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
-    <PackageReference Include="System.CommandLine" />
-    <PackageReference Include="System.CommandLine.Hosting" />
-    <PackageReference Include="System.CommandLine.NamingConventionBinder" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,7 +34,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Build.BinlogRedactor\Microsoft.Build.BinlogRedactor.csproj" />
+    <InternalsVisibleTo Include="DotUtils.MsBuild.BinlogRedactor.Tests" PublicKey="0024000004800000940000000602000000240000525341310004000001000100c9581bcd562d939d6abd4ac39085dc260d55211ca7ff5b2795f2745d10f24f0c70fcf212dba68828ff4f28c59bf2415236d9a3f081243f04491e0f0afbf960200eb173dfef8f086b847080eca24620c33211c52fe5d272ca62097266f9fef9f1605880d35e13d45159f32975eee5d6d485edf625ef72bcf9d45e7061478d50a8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DotUtils.MsBuild.SensitiveDataDetector\DotUtils.MsBuild.SensitiveDataDetector.csproj" />
   </ItemGroup>
 
 </Project>
