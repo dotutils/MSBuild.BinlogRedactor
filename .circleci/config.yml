@@ -30,13 +30,13 @@ jobs:
           command: dotnet pack --configuration Release -p:PackageVersion=<<pipeline.parameters.artefact-version-prefix>>-$CIRCLE_BUILD_NUM --no-restore
       - run:
            name: "List artifacts"
-           command: find ./ -type f -name 'MSBuild.BinlogRedactor.*.*nupkg'
+           command: find ./ -type f -name 'DotUtils.MsBuild.BinlogRedactor.*.*nupkg'
       - run:
            name: "Copy artifacts"
            command: |
               shopt -s globstar
               mkdir nugets
-              cp **/MSBuild.BinlogRedactor.*.*nupkg ./nugets
+              cp **/DotUtils.MsBuild.BinlogRedactor.*.*nupkg ./nugets
       - store_artifacts:
            path: ./nugets
 
