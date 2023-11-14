@@ -41,7 +41,7 @@ namespace Microsoft.Build.BinlogRedactor.Tests
                 BinaryLogReplayEventSource.OpenBuildEventsReader(binlogPath);
             BinaryLogger outputBinlog = new BinaryLogger()
             {
-                Parameters = $"LogFile={replayedFile};ProjectImports=Replay;OmitInitialInfo",
+                Parameters = $"LogFile={replayedFile};OmitInitialInfo",
             };
             // Subscribe empty action. But the mere subscribing forces unpacking and repacking of embedded files
             buildEventsReader.ArchiveFileEncountered += arg => {};
@@ -64,33 +64,6 @@ namespace Microsoft.Build.BinlogRedactor.Tests
 
             return Directory.EnumerateFiles(dir, "*.binlog",
                 new EnumerationOptions() { IgnoreInaccessible = true, RecurseSubdirectories = true });
-        }
-
-        [Fact]
-        public void TestBinaryWriterOff()
-        {
-            MemoryStream stream = new();
-            BinaryWriter writer = new(stream);
-            //writer.Write(1);
-            writer.Write("test");
-            writer.Write(1);
-            writer.Write("test");
-            writer.Write("test");
-            writer.Write("test");
-            writer.Write("test");
-            writer.Write("test");
-            //writer.Write7BitEncodedInt(2);
-            //writer.Write();
-
-            writer.Flush();
-
-            stream.Position = 0;
-
-            BinaryReader reader = new(stream);
-            //            reader.ReadString().Should().Be("test");
-            reader.ReadInt64();//.Should().Be(4);
-            reader.ReadInt64();
-            reader.ReadInt64();
         }
 
         [Fact]

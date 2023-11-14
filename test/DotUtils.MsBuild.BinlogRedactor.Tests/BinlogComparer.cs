@@ -77,40 +77,13 @@ namespace Microsoft.Build.BinlogRedactor.Tests
             //  and to force the embedded files to be read.
             reader2.Read().Should().BeNull($"Binlogs ({firstPath} and {secondPath}) are not equal - second has more events >{i + 1}");
 
-            SweepArchiveFiles();
-
-            embedFiles1.Should().BeEmpty("No files present only in first file are expected.");
-            embedFiles2.Should().BeEmpty("No files present only in second file are expected.");
-
-            void SweepArchiveFiles()
-            {
-                List<string> toRemove = new();
-                foreach (var file in embedFiles1)
-                {
-                    if (embedFiles2.TryGetValue(file.Key, out string? content))
-                    {
-                        if (!string.Equals(file.Value, content))
-                        {
-                            Assert.Fail($"Binlogs ({firstPath} and {secondPath}) are not equal at embedded file {file.Key}");
-                        }
-                        toRemove.Add(file.Key);
-                        embedFiles2.Remove(file.Key);
-                    }
-                }
-
-                foreach (var file in toRemove)
-                {
-                    embedFiles1.Remove(file);
-                }
-            }
+            Assert.Equal(embedFiles1, embedFiles2);
 
             void AddArchiveFile(Dictionary<string, string> files, ArchiveFileEventArgs arg)
             {
-                ArchiveFile embedFile = arg.ObtainArchiveFile();
-                string content = embedFile.GetContent();
+                ArchiveFile embedFile = arg.ArchiveData.ToArchString();
+                string content = embedFile.Content;
                 files.Add(embedFile.FullPath, content);
-                arg.SetResult(embedFile.FullPath, content);
-                SweepArchiveFiles();
             }
         }
 

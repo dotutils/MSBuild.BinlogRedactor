@@ -2,6 +2,6 @@
   <Import Project="dependabot\Packages.props" />
   <ItemGroup>
     <!-- <PackageVersion Include="Microsoft.Build" Version="17.8.0-preview-23424-02" /> -->
-	<PackageVersion Include="Microsoft.Build" Version="17.9.0-dev-23505-01" />
+	<PackageVersion Include="Microsoft.Build" Version="17.9.0-dev-23564-01" />
   </ItemGroup>
 </Project>
