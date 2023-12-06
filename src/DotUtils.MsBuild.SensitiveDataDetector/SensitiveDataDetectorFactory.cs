@@ -37,6 +37,12 @@ public static class SensitiveDataDetectorFactory
     {
         List<ISensitiveDataRedactor> redactors = new List<ISensitiveDataRedactor>();
 
+        if (secretsToRedact != null && secretsToRedact.Any() &&
+            sensitiveDataKind.HasFlag(SensitiveDataKind.ExplicitSecrets))
+        {
+            redactors.Add(GetExplicitSecretsDetector(secretsToRedact, identifyReplacements));
+        }
+
         if (sensitiveDataKind.HasFlag(SensitiveDataKind.Username))
         {
             redactors.Add(GetUsernameDetector(identifyReplacements));
@@ -45,12 +51,6 @@ public static class SensitiveDataDetectorFactory
         if (sensitiveDataKind.HasFlag(SensitiveDataKind.CommonSecrets))
         {
             redactors.Add(GetCommonSecretsDetector(identifyReplacements));
-        }
-
-        if (secretsToRedact != null && secretsToRedact.Any() &&
-            sensitiveDataKind.HasFlag(SensitiveDataKind.ExplicitSecrets))
-        {
-            redactors.Add(GetExplicitSecretsDetector(secretsToRedact, identifyReplacements));
         }
 
         return new CompositeSecretsDetector(redactors.ToArray());

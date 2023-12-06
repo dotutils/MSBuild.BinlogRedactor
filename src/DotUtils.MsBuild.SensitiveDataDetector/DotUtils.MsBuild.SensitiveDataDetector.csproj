@@ -7,11 +7,13 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <!-- packaging properties -->
-    <PackageVersion>0.0.7</PackageVersion>
+    <PackageVersion>0.0.8</PackageVersion>
     <Title>BinlogRedactor sensitive data autodetection library</Title>
     <PackageId>DotUtils.MsBuild.BinlogRedactor.SensitiveDataDetector</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/dotutils/MSBuild.BinlogRedactor</PackageProjectUrl>
+    <PackageIcon>icon.jpeg</PackageIcon>
     <!-- SourceLink properties -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -21,6 +23,7 @@
 
   <ItemGroup>
     <None Include="..\..\docs\README.md" Pack="true" PackagePath="\"/>
+    <None Include="..\..\icon.jpeg" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>

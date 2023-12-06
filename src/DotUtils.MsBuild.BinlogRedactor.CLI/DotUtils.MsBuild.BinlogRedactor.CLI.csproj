@@ -16,6 +16,8 @@
     <PackageId>DotUtils.MsBuild.BinlogRedactor.CLI</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/dotutils/MSBuild.BinlogRedactor</PackageProjectUrl>
+    <PackageIcon>icon.jpeg</PackageIcon>
     <!-- SourceLink properties -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -39,6 +41,7 @@
 
   <ItemGroup>
     <None Include="..\..\docs\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\icon.jpeg" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
