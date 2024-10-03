@@ -1,6 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using DotUtils.MsBuild.SensitiveDataDetector;
+
 namespace Microsoft.Build.SensitiveDataDetector;
 
 [Flags]
@@ -15,20 +17,21 @@ public static class SensitiveDataDetectorFactory
 {
     public static string DefaultReplacementPattern { get; set; } = "*******";
 
-    public static ISensitiveDataRedactor GetUsernameDetector(bool identifyReplacements)
-    {
-        return new UsernameDetector(identifyReplacements ? null : DefaultReplacementPattern);
-    }
+    public static ISensitiveDataRedactor GetUsernameRedactor(bool identifyReplacements) => new UsernameDetector(identifyReplacements ? null : DefaultReplacementPattern);
 
-    public static ISensitiveDataRedactor GetCommonSecretsDetector(bool identifyReplacements)
-    {
-        return new PatternsDetector(true, identifyReplacements ? null : DefaultReplacementPattern);
-    }
+    public static ISensitiveDataDetector GetUsernameDetector(bool identifyReplacements) => new UsernameDetector(identifyReplacements ? null : DefaultReplacementPattern);
 
-    public static ISensitiveDataRedactor GetExplicitSecretsDetector(string[] secretsToRedact, bool identifyReplacements) =>
+    public static ISensitiveDataRedactor GetCommonSecretsRedactor(bool identifyReplacements) => new PatternsDetector(true, identifyReplacements ? null : DefaultReplacementPattern);
+
+    public static ISensitiveDataDetector GetCommonSecretsDetector(bool identifyReplacements) => new PatternsDetector(true, identifyReplacements ? null : DefaultReplacementPattern);
+
+    public static ISensitiveDataRedactor GetExplicitSecretsRedactor(string[] secretsToRedact, bool identifyReplacements) =>
         new ExplicitSecretsDetector(secretsToRedact, identifyReplacements ? null : DefaultReplacementPattern);
 
-    public static ISensitiveDataRedactor GetSecretsDetector(
+    public static ISensitiveDataDetector GetExplicitSecretsDetector(string[] secretsToRedact, bool identifyReplacements) =>
+        new ExplicitSecretsDetector(secretsToRedact, identifyReplacements ? null : DefaultReplacementPattern);
+
+    public static ISensitiveDataRedactor GetSecretsRedactor(
         SensitiveDataKind sensitiveDataKind,
         bool identifyReplacements,
         string[]? secretsToRedact = null)
@@ -38,19 +41,45 @@ public static class SensitiveDataDetectorFactory
         if (secretsToRedact != null && secretsToRedact.Any() &&
             sensitiveDataKind.HasFlag(SensitiveDataKind.ExplicitSecrets))
         {
-            redactors.Add(GetExplicitSecretsDetector(secretsToRedact, identifyReplacements));
+            redactors.Add(GetExplicitSecretsRedactor(secretsToRedact, identifyReplacements));
         }
 
         if (sensitiveDataKind.HasFlag(SensitiveDataKind.Username))
         {
-            redactors.Add(GetUsernameDetector(identifyReplacements));
+            redactors.Add(GetUsernameRedactor(identifyReplacements));
         }
 
         if (sensitiveDataKind.HasFlag(SensitiveDataKind.CommonSecrets))
         {
-            redactors.Add(GetCommonSecretsDetector(identifyReplacements));
+            redactors.Add(GetCommonSecretsRedactor(identifyReplacements));
         }
 
         return new CompositeSecretsDetector(redactors.ToArray());
+    }
+
+    public static ISensitiveDataDetector GetSecretsDetector(
+       SensitiveDataKind sensitiveDataKind,
+       bool identifyReplacements,
+       string[]? secretsToRedact = null)
+    {
+        List<ISensitiveDataDetector> detectors = new List<ISensitiveDataDetector>();
+
+        if (secretsToRedact != null && secretsToRedact.Any() &&
+            sensitiveDataKind.HasFlag(SensitiveDataKind.ExplicitSecrets))
+        {
+            detectors.Add(GetExplicitSecretsDetector(secretsToRedact, identifyReplacements));
+        }
+
+        if (sensitiveDataKind.HasFlag(SensitiveDataKind.Username))
+        {
+            detectors.Add(GetUsernameDetector(identifyReplacements));
+        }
+
+        if (sensitiveDataKind.HasFlag(SensitiveDataKind.CommonSecrets))
+        {
+            detectors.Add(GetCommonSecretsDetector(identifyReplacements));
+        }
+
+        return new CompositeSecretsDetector(detectors.ToArray());
     }
 }

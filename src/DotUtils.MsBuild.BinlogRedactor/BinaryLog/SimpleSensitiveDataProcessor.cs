@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using DotUtils.MsBuild.BinlogRedactor.BinaryLog;
+using DotUtils.MsBuild.SensitiveDataDetector;
 using Microsoft.Build.SensitiveDataDetector;
 
 namespace Microsoft.Build.BinlogRedactor.BinaryLog;
@@ -38,15 +39,20 @@ internal sealed class SensitiveDataProcessor : ISensitiveDataProcessor
 {
     private readonly ISensitiveDataRedactor _redactor;
 
+    private readonly ISensitiveDataDetector _detector;
+
     public SensitiveDataProcessor(
         SensitiveDataKind sensitiveDataKind,
         bool identifyReplacements,
         string[]? secretsToRedact = null)
     {
-        _redactor = SensitiveDataDetectorFactory.GetSecretsDetector(sensitiveDataKind, identifyReplacements, secretsToRedact);
+        _redactor = SensitiveDataDetectorFactory.GetSecretsRedactor(sensitiveDataKind, identifyReplacements, secretsToRedact);
+        _detector = SensitiveDataDetectorFactory.GetSecretsDetector(sensitiveDataKind, identifyReplacements, secretsToRedact);
     }
 
     public string ReplaceSensitiveData(string text) => _redactor.Redact(text);
+
+    public Dictionary<SensitiveDataKind, List<SecretDescriptor>> DetectSensitiveData(string text) => _detector.Detect(text);
 
     public bool IsSensitiveData(string text) => _redactor.Redact(text) != text;
 }

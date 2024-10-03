@@ -7,12 +7,13 @@ namespace Microsoft.Build.SensitiveDataDetector;
 
 internal class CompositeSecretsDetector : ISensitiveDataRedactor, ISensitiveDataDetector
 {
-    private readonly ISensitiveDataRedactor[] _detectors;
+    private readonly ISensitiveDataDetector[] _detectors;
 
-    public CompositeSecretsDetector(params ISensitiveDataRedactor[] detectors)
-    {
-        _detectors = detectors;
-    }
+    private readonly ISensitiveDataRedactor[] _redactors;
+
+    public CompositeSecretsDetector(params ISensitiveDataRedactor[] redactors) => _redactors = redactors;
+
+    public CompositeSecretsDetector(params ISensitiveDataDetector[] detectors) => _detectors = detectors;
 
     public Dictionary<SensitiveDataKind, List<SecretDescriptor>> Detect(string input)
     {
