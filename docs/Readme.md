@@ -8,7 +8,7 @@ https://www.nuget.org/packages/DotUtils.MsBuild.BinlogRedactor.CLI/
 
 ```
 Description:
-  Provides ability to redact sensitive data from MSBuild binlogs (https://aka.ms/binlog-redactor).
+  Provides ability to redact and detect sensitive data from MSBuild binlogs (https://aka.ms/binlog-redactor).
 
 Usage:
   redact-binlog [options]

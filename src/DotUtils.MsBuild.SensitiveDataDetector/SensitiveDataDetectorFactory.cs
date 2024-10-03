@@ -25,10 +25,8 @@ public static class SensitiveDataDetectorFactory
         return new PatternsDetector(true, identifyReplacements ? null : DefaultReplacementPattern);
     }
 
-    public static ISensitiveDataRedactor GetExplicitSecretsDetector(string[] secretsToRedact, bool identifyReplacements)
-    {
-        return new ExplicitSecretsDetector(secretsToRedact, identifyReplacements ? null : DefaultReplacementPattern);
-    }
+    public static ISensitiveDataRedactor GetExplicitSecretsDetector(string[] secretsToRedact, bool identifyReplacements) =>
+        new ExplicitSecretsDetector(secretsToRedact, identifyReplacements ? null : DefaultReplacementPattern);
 
     public static ISensitiveDataRedactor GetSecretsDetector(
         SensitiveDataKind sensitiveDataKind,

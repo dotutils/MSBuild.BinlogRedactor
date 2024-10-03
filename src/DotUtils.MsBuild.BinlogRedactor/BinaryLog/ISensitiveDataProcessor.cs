@@ -1,4 +1,4 @@
-﻿namespace Microsoft.Build.BinlogRedactor.BinaryLog;
+﻿namespace DotUtils.MsBuild.BinlogRedactor.BinaryLog;
 
 public interface ISensitiveDataProcessor
 {
@@ -6,5 +6,6 @@ public interface ISensitiveDataProcessor
     /// Processes the given text and if needed, replaces sensitive data with a placeholder.
     /// </summary>
     string ReplaceSensitiveData(string text);
+
     bool IsSensitiveData(string text);
 }

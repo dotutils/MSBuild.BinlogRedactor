@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.Build.SensitiveDataDetector
 {
@@ -64,6 +63,27 @@ namespace Microsoft.Build.SensitiveDataDetector
             return result.ToString();
         }
 #endif
+
+        public static (int lineNumber, int columnNumber) GetLineAndColumn(string input, int index)
+        {
+            int lineNumber = 1;
+            int columnNumber = 1;
+
+            for (int i = 0; i < index; i++)
+            {
+                if (input[i] == '\n')
+                {
+                    lineNumber++;
+                    columnNumber = 1;
+                }
+                else
+                {
+                    columnNumber++;
+                }
+            }
+
+            return (lineNumber, columnNumber);
+        }
 
     }
 }

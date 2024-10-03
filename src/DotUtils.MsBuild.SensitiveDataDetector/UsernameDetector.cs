@@ -2,10 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.RegularExpressions;
+using DotUtils.MsBuild.SensitiveDataDetector;
 
 namespace Microsoft.Build.SensitiveDataDetector;
 
-internal class UsernameDetector : ISensitiveDataRedactor
+internal class UsernameDetector : ISensitiveDataRedactor, ISensitiveDataDetector
 {
     public UsernameDetector() : this(defaultReplacementText) { }
 
@@ -36,6 +37,71 @@ internal class UsernameDetector : ISensitiveDataRedactor
         }
 
         return input.Replace(username, replacementText, StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    public Dictionary<SensitiveDataKind, List<SecretDescriptor>> Detect(string input)
+    {
+        var result = new Dictionary<SensitiveDataKind, List<SecretDescriptor>>();
+        var detectedUsernames = new List<SecretDescriptor>();
+
+        DetectUsernamesWithRegex(input, winUsernameRegex, detectedUsernames);
+        DetectUsernamesWithRegex(input, nixUsernameRegex, detectedUsernames);
+
+        DetectEnvironmentUsername(input, detectedUsernames);
+
+        if (detectedUsernames.Count > 0)
+        {
+            result[SensitiveDataKind.Username] = detectedUsernames;
+        }
+
+        return result;
+    }
+
+    private void DetectUsernamesWithRegex(string input, Regex regex, List<SecretDescriptor> detectedUsernames)
+    {
+        foreach (Match match in regex.Matches(input))
+        {
+            var username = match.Groups[1].Value;
+            var lineInfo = StringUtils.GetLineAndColumn(input, match.Groups[1].Index);
+            var secretDescriptor = new SecretDescriptor
+            {
+                Secret = username,
+                Line = lineInfo.lineNumber,
+                Column = lineInfo.columnNumber,
+                Index = match.Groups[1].Index
+            };
+            detectedUsernames.Add(secretDescriptor);
+
+            if (!usernameFound)
+            {
+                this.username = username;
+                usernameFound = true;
+            }
+        }
+    }
+
+    private void DetectEnvironmentUsername(string input, List<SecretDescriptor> detectedUsernames)
+    {
+        int index = 0;
+        while ((index = input.IndexOf(Environment.UserName, index, StringComparison.InvariantCultureIgnoreCase)) != -1)
+        {
+            var lineInfo = StringUtils.GetLineAndColumn(input, index);
+            var secretDescriptor = new SecretDescriptor
+            {
+                Secret = Environment.UserName,
+                Line = lineInfo.lineNumber,
+                Column = lineInfo.columnNumber,
+                Index = index
+            };
+            detectedUsernames.Add(secretDescriptor);
+            index += Environment.UserName.Length;
+
+            if (!usernameFound)
+            {
+                this.username = Environment.UserName;
+                usernameFound = true;
+            }
+        }
     }
 
     private void DetectUsername(string input, Regex usernameRegex)
