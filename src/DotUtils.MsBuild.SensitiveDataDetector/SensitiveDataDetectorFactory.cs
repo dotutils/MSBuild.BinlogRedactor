@@ -8,9 +8,35 @@ namespace Microsoft.Build.SensitiveDataDetector;
 [Flags]
 public enum SensitiveDataKind
 {
-    Username = 1,
-    CommonSecrets = 2,
-    ExplicitSecrets = 4,
+    None = 0,
+    Username = 1 << 0,
+    CommonSecrets = 1 << 1,
+    ExplicitSecrets = 1 << 2,
+
+    // Specific types of sensitive data
+    AzureClientId = 1 << 3,
+    AzureClientSecret = 1 << 4,
+    AzureContainerRegistryUsername = 1 << 5,
+    AzureContainerRegistryPassword = 1 << 6,
+    AzureServiceBusConnectionString = 1 << 7,
+    AzureStorageAccountKey = 1 << 8,
+    AzureStorageAccountNameAndKey = 1 << 9,
+    AzureStorageConnectionString = 1 << 10,
+    CosmosDbConnectionString = 1 << 11,
+    GoogleApiKey = 1 << 12,
+    GoogleOAuth = 1 << 13,
+    JwtToken = 1 << 14,
+    PasswordInUrl = 1 << 15,
+    SlackToken = 1 << 16,
+    SqlConnectionString = 1 << 17,
+
+    // Groupings
+    AllAzureSecrets = AzureClientId | AzureClientSecret | AzureContainerRegistryUsername | AzureContainerRegistryPassword |
+                      AzureServiceBusConnectionString | AzureStorageAccountKey | AzureStorageAccountNameAndKey | AzureStorageConnectionString,
+    AllGoogleSecrets = GoogleApiKey | GoogleOAuth,
+    AllConnectionStrings = AzureServiceBusConnectionString | AzureStorageConnectionString | CosmosDbConnectionString | SqlConnectionString,
+
+    All = ~None
 }
 
 public static class SensitiveDataDetectorFactory
