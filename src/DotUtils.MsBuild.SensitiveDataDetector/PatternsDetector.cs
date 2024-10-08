@@ -1,5 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
+using System.Reflection;
 using System.Text.RegularExpressions;
 using DotUtils.MsBuild.SensitiveDataDetector;
 
@@ -65,13 +66,7 @@ internal class PatternsDetector : ISensitiveDataRedactor, ISensitiveDataDetector
             foreach (Match match in matches)
             {
                 var lineInfo = StringUtils.GetLineAndColumn(input, match.Index);
-                var secretDescriptor = new SecretDescriptor
-                {
-                    Secret = match.Value,
-                    Line = lineInfo.lineNumber,
-                    Column = lineInfo.columnNumber,
-                    Index = match.Index
-                };
+                var secretDescriptor = new SecretDescriptor(match.Value, lineInfo.lineNumber, lineInfo.columnNumber, match.Index);
                 allMatches.Add((kind, secretDescriptor));
             }
         }

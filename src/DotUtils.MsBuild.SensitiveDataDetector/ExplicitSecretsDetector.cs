@@ -28,13 +28,7 @@ internal sealed class ExplicitSecretsDetector : ISensitiveDataRedactor, ISensiti
             while ((index = input.IndexOf(pwd, index, StringComparison.CurrentCulture)) != -1)
             {
                 var lineInfo = StringUtils.GetLineAndColumn(input, index);
-                var secretDescriptor = new SecretDescriptor
-                {
-                    Secret = pwd,
-                    Line = lineInfo.lineNumber,
-                    Column = lineInfo.columnNumber,
-                    Index = index
-                };
+                var secretDescriptor = new SecretDescriptor(pwd, lineInfo.lineNumber, lineInfo.columnNumber, index);
                 detectedPasswords.Add(secretDescriptor);
                 index += pwd.Length;
             }

@@ -10,14 +10,22 @@ namespace DotUtils.MsBuild.SensitiveDataDetector
         Dictionary<SensitiveDataKind, List<SecretDescriptor>> Detect(string input);
     }
 
-    public record SecretDescriptor
+    public readonly record struct SecretDescriptor
     {
-        public string? Secret { get; set; }
+        public SecretDescriptor(string secret, int line, int column, int index)
+        {
+            Secret = secret;
+            Line = line;
+            Column = column;
+            Index = index;
+        }
 
-        public int Line { get; set; }
+        public string? Secret { get; }
 
-        public int Column { get; set; }
+        public int Line { get; }
 
-        public int Index { get; set; }
+        public int Column { get; }
+
+        public int Index { get; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Reflection;
 using System.Text.RegularExpressions;
 using DotUtils.MsBuild.SensitiveDataDetector;
 
@@ -63,13 +64,7 @@ internal class UsernameDetector : ISensitiveDataRedactor, ISensitiveDataDetector
         {
             var username = match.Groups[1].Value;
             var lineInfo = StringUtils.GetLineAndColumn(input, match.Groups[1].Index);
-            var secretDescriptor = new SecretDescriptor
-            {
-                Secret = username,
-                Line = lineInfo.lineNumber,
-                Column = lineInfo.columnNumber,
-                Index = match.Groups[1].Index
-            };
+            var secretDescriptor = new SecretDescriptor(username, lineInfo.lineNumber, lineInfo.columnNumber, match.Groups[1].Index);
             detectedUsernames.Add(secretDescriptor);
 
             if (!usernameFound)
@@ -86,13 +81,7 @@ internal class UsernameDetector : ISensitiveDataRedactor, ISensitiveDataDetector
         while ((index = input.IndexOf(Environment.UserName, index, StringComparison.InvariantCultureIgnoreCase)) != -1)
         {
             var lineInfo = StringUtils.GetLineAndColumn(input, index);
-            var secretDescriptor = new SecretDescriptor
-            {
-                Secret = Environment.UserName,
-                Line = lineInfo.lineNumber,
-                Column = lineInfo.columnNumber,
-                Index = index
-            };
+            var secretDescriptor = new SecretDescriptor(Environment.UserName, lineInfo.lineNumber, lineInfo.columnNumber, index);
             detectedUsernames.Add(secretDescriptor);
             index += Environment.UserName.Length;
 
