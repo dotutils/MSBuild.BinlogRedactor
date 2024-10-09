@@ -1,4 +1,5 @@
-﻿using Microsoft.Build.BinlogRedactor.Reporting;
+﻿using DotUtils.MsBuild.BinlogRedactor.BinaryLog;
+using Microsoft.Build.BinlogRedactor.Reporting;
 using Microsoft.Build.Logging;
 
 namespace Microsoft.Build.BinlogRedactor.BinaryLog;

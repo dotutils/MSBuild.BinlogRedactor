@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using DotUtils.MsBuild.BinlogRedactor.BinaryLog;
 using Microsoft.Build.BinlogRedactor.BinaryLog;
 using Microsoft.Build.BinlogRedactor.IO;
 using Microsoft.Build.BinlogRedactor.Reporting;
