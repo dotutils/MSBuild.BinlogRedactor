@@ -6,37 +6,53 @@ using DotUtils.MsBuild.SensitiveDataDetector;
 namespace Microsoft.Build.SensitiveDataDetector;
 
 [Flags]
-public enum SensitiveDataKind
+public enum SensitiveDataKind : long
 {
-    None = 0,
-    Username = 1 << 0,
-    CommonSecrets = 1 << 1,
-    ExplicitSecrets = 1 << 2,
-
-    // Specific types of sensitive data
-    AzureClientId = 1 << 3,
-    AzureClientSecret = 1 << 4,
-    AzureContainerRegistryUsername = 1 << 5,
-    AzureContainerRegistryPassword = 1 << 6,
-    AzureServiceBusConnectionString = 1 << 7,
-    AzureStorageAccountKey = 1 << 8,
-    AzureStorageAccountNameAndKey = 1 << 9,
-    AzureStorageConnectionString = 1 << 10,
-    CosmosDbConnectionString = 1 << 11,
-    GoogleApiKey = 1 << 12,
-    GoogleOAuth = 1 << 13,
-    JwtToken = 1 << 14,
-    PasswordInUrl = 1 << 15,
-    SlackToken = 1 << 16,
-    SqlConnectionString = 1 << 17,
-
-    // Groupings
-    AllAzureSecrets = AzureClientId | AzureClientSecret | AzureContainerRegistryUsername | AzureContainerRegistryPassword |
-                      AzureServiceBusConnectionString | AzureStorageAccountKey | AzureStorageAccountNameAndKey | AzureStorageConnectionString,
-    AllGoogleSecrets = GoogleApiKey | GoogleOAuth,
-    AllConnectionStrings = AzureServiceBusConnectionString | AzureStorageConnectionString | CosmosDbConnectionString | SqlConnectionString,
-
-    All = ~None
+    None = 0L,
+    Username = 1L << 0,
+    CommonSecrets = 1L << 1,
+    ExplicitSecrets = 1L << 2,
+    CommonAnnotatedSecurityKey = 1L << 3,
+    AadClientAppIdentifiableCredentials = 1L << 4,
+    AzureFunctionIdentifiableKey = 1L << 5,
+    AzureSearchIdentifiableQueryKey = 1L << 6,
+    AzureSearchIdentifiableAdminKey = 1L << 7,
+    AzureRelayIdentifiableKey = 1L << 8,
+    AzureEventHubIdentifiableKey = 1L << 9,
+    AzureServiceBusIdentifiableKey = 1L << 10,
+    AzureIotHubIdentifiableKey = 1L << 11,
+    AzureIotDeviceIdentifiableKey = 1L << 12,
+    AzureIotDeviceProvisioningIdentifiableKey = 1L << 13,
+    AzureStorageAccountIdentifiableKey = 1L << 14,
+    AzureCosmosDBIdentifiableKey = 1L << 15,
+    AzureBatchIdentifiableKey = 1L << 16,
+    AzureMLWebServiceClassicIdentifiableKey = 1L << 17,
+    AzureApimIdentifiableDirectManagementKey = 1L << 18,
+    AzureApimIdentifiableSubscriptionKey = 1L << 19,
+    AzureApimIdentifiableGatewayKey = 1L << 20,
+    AzureApimIdentifiableRepositoryKey = 1L << 21,
+    AzureCacheForRedisIdentifiableKey = 1L << 22,
+    AzureContainerRegistryIdentifiableKey = 1L << 23,
+    NuGetApiKey = 1L << 24,
+    AzureDatabricksPat = 1L << 25,
+    AzureEventGridIdentifiableKey = 1L << 26,
+    NpmAuthorKey = 1L << 27,
+    SecretScanningSampleToken = 1L << 28,
+    AzureClientId = 1L << 29,
+    AzureClientSecret = 1L << 30,
+    AzureContainerRegistryUsername = 1L << 31,
+    AzureContainerRegistryPassword = 1L << 32,
+    AzureServiceBusConnectionString = 1L << 33,
+    AzureStorageAccountKey = 1L << 34,
+    AzureStorageAccountNameAndKey = 1L << 35,
+    AzureStorageConnectionString = 1L << 36,
+    CosmosDbConnectionString = 1L << 37,
+    GoogleApiKey = 1L << 38,
+    GoogleOAuth = 1L << 39,
+    JwtToken = 1L << 40,
+    PasswordInUrl = 1L << 41,
+    SlackToken = 1L << 42,
+    SqlConnectionString = 1L << 43
 }
 
 public static class SensitiveDataDetectorFactory
