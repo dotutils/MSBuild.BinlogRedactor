@@ -52,7 +52,9 @@ public enum SensitiveDataKind : long
     JwtToken = 1L << 40,
     PasswordInUrl = 1L << 41,
     SlackToken = 1L << 42,
-    SqlConnectionString = 1L << 43
+    SqlConnectionString = 1L << 43,
+    AzureAdIdentityPassword = 1L << 44,
+    Email = 1L << 45,
 }
 
 public static class SensitiveDataDetectorFactory
