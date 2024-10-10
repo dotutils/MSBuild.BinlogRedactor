@@ -6,7 +6,7 @@ using DotUtils.MsBuild.SensitiveDataDetector;
 namespace Microsoft.Build.SensitiveDataDetector;
 
 [Flags]
-public enum SensitiveDataKind
+public enum SensitiveDataKind : long
 {
     Username = 1,
     CommonSecrets = 2,
