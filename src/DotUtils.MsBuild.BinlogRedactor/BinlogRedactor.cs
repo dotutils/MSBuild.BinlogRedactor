@@ -122,10 +122,10 @@ namespace Microsoft.Build.BinlogRedactor
         }
 
         private async Task<BinlogRedactorErrorCode> RedactWorker(
-        string inputFile,
-        string outputFile,
-        BinlogRedactorOptions args,
-        CancellationToken cancellationToken)
+            string inputFile,
+            string outputFile,
+            BinlogRedactorOptions args,
+            CancellationToken cancellationToken)
         {
             _logger.LogInformation("Redacting binlog {inputFile} to {outputFile} ({size} KB)", inputFile, outputFile, _fileSystem.GetFileSizeInBytes(inputFile) / 1024);
 

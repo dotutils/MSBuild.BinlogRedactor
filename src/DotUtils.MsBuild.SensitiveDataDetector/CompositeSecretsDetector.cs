@@ -40,9 +40,9 @@ internal class CompositeSecretsDetector : ISensitiveDataRedactor, ISensitiveData
 
     public string Redact(string input)
     {
-        foreach (ISensitiveDataRedactor detector in _detectors)
+        foreach (ISensitiveDataRedactor redactor in _redactors)
         {
-            input = detector.Redact(input);
+            input = redactor.Redact(input);
         }
 
         return input;

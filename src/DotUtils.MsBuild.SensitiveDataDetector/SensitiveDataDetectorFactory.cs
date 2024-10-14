@@ -8,44 +8,18 @@ namespace Microsoft.Build.SensitiveDataDetector;
 [Flags]
 public enum SensitiveDataKind
 {
-    None = 0,
-    Username = 1 << 0,
-    CommonSecrets = 1 << 1,
-    ExplicitSecrets = 1 << 2,
-
-    // Specific types of sensitive data
-    AzureClientId = 1 << 3,
-    AzureClientSecret = 1 << 4,
-    AzureContainerRegistryUsername = 1 << 5,
-    AzureContainerRegistryPassword = 1 << 6,
-    AzureServiceBusConnectionString = 1 << 7,
-    AzureStorageAccountKey = 1 << 8,
-    AzureStorageAccountNameAndKey = 1 << 9,
-    AzureStorageConnectionString = 1 << 10,
-    CosmosDbConnectionString = 1 << 11,
-    GoogleApiKey = 1 << 12,
-    GoogleOAuth = 1 << 13,
-    JwtToken = 1 << 14,
-    PasswordInUrl = 1 << 15,
-    SlackToken = 1 << 16,
-    SqlConnectionString = 1 << 17,
-
-    // Groupings
-    AllAzureSecrets = AzureClientId | AzureClientSecret | AzureContainerRegistryUsername | AzureContainerRegistryPassword |
-                      AzureServiceBusConnectionString | AzureStorageAccountKey | AzureStorageAccountNameAndKey | AzureStorageConnectionString,
-    AllGoogleSecrets = GoogleApiKey | GoogleOAuth,
-    AllConnectionStrings = AzureServiceBusConnectionString | AzureStorageConnectionString | CosmosDbConnectionString | SqlConnectionString,
-
-    All = ~None
+    Username = 1,
+    CommonSecrets = 2,
+    ExplicitSecrets = 4,
 }
 
 public static class SensitiveDataDetectorFactory
 {
     public static string DefaultReplacementPattern { get; set; } = "*******";
 
-    public static ISensitiveDataRedactor GetUsernameRedactor(bool identifyReplacements) => new UsernameDetector(identifyReplacements ? null : DefaultReplacementPattern);
+    public static ISensitiveDataRedactor GetUserNameRedactor(bool identifyReplacements) => new UserNameDetector(identifyReplacements ? null : DefaultReplacementPattern);
 
-    public static ISensitiveDataDetector GetUsernameDetector(bool identifyReplacements) => new UsernameDetector(identifyReplacements ? null : DefaultReplacementPattern);
+    public static ISensitiveDataDetector GetUserNameDetector(bool identifyReplacements) => new UserNameDetector(identifyReplacements ? null : DefaultReplacementPattern);
 
     public static ISensitiveDataRedactor GetCommonSecretsRedactor(bool identifyReplacements) => new PatternsDetector(true, identifyReplacements ? null : DefaultReplacementPattern);
 
@@ -72,7 +46,7 @@ public static class SensitiveDataDetectorFactory
 
         if (sensitiveDataKind.HasFlag(SensitiveDataKind.Username))
         {
-            redactors.Add(GetUsernameRedactor(identifyReplacements));
+            redactors.Add(GetUserNameRedactor(identifyReplacements));
         }
 
         if (sensitiveDataKind.HasFlag(SensitiveDataKind.CommonSecrets))
@@ -98,7 +72,7 @@ public static class SensitiveDataDetectorFactory
 
         if (sensitiveDataKind.HasFlag(SensitiveDataKind.Username))
         {
-            detectors.Add(GetUsernameDetector(identifyReplacements));
+            detectors.Add(GetUserNameDetector(identifyReplacements));
         }
 
         if (sensitiveDataKind.HasFlag(SensitiveDataKind.CommonSecrets))

@@ -1,18 +1,14 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Reflection;
 using System.Text.RegularExpressions;
 using DotUtils.MsBuild.SensitiveDataDetector;
 
 namespace Microsoft.Build.SensitiveDataDetector;
 
-internal class UsernameDetector : ISensitiveDataRedactor, ISensitiveDataDetector
+internal class UserNameDetector(string? replacementText) : ISensitiveDataRedactor, ISensitiveDataDetector
 {
-    public UsernameDetector() : this(defaultReplacementText) { }
-
-    public UsernameDetector(string? replacementText) => this.replacementText =
-        string.IsNullOrEmpty(replacementText) ? defaultReplacementText : replacementText!;
+    public UserNameDetector() : this(defaultReplacementText) { }
 
     private const RegexOptions regexOptions =
                     RegexOptions.Compiled |
@@ -21,7 +17,8 @@ internal class UsernameDetector : ISensitiveDataRedactor, ISensitiveDataDetector
     private const string winUsernamePathPattern = @".:\\[U|u]sers\\(.+?)(\\|\z)";
     private const string nixUsernamePathPattern = @"home\/(.+?)\/";
     private const string defaultReplacementText = @"REDACTED__Username";
-    private readonly string replacementText;
+    private readonly string replacementText =
+        string.IsNullOrEmpty(replacementText) ? defaultReplacementText : replacementText!;
     private string username = Environment.UserName;
     private bool usernameFound = false;
 
@@ -87,7 +84,7 @@ internal class UsernameDetector : ISensitiveDataRedactor, ISensitiveDataDetector
 
             if (!usernameFound)
             {
-                this.username = Environment.UserName;
+                username = Environment.UserName;
                 usernameFound = true;
             }
         }
@@ -110,11 +107,22 @@ internal class UsernameDetector : ISensitiveDataRedactor, ISensitiveDataDetector
     {
         public bool Equals(SecretDescriptor x, SecretDescriptor y)
         {
-            if (ReferenceEquals(x, y)) return true;
-            if (ReferenceEquals(x, null)) return false;
-            if (ReferenceEquals(y, null)) return false;
-            if (x.GetType() != y.GetType()) return false;
-            return x.Secret == y.Secret && x.Index == y.Index;
+            if (ReferenceEquals(x, y))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(x, null))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(y, null))
+            {
+                return false;
+            }
+
+            return x.GetType() != y.GetType() ? false : x.Secret == y.Secret && x.Index == y.Index;
         }
 
         public int GetHashCode(SecretDescriptor obj)

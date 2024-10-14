@@ -12,12 +12,13 @@ namespace DotUtils.MsBuild.SensitiveDataDetector
 
     public readonly record struct SecretDescriptor
     {
-        public SecretDescriptor(string secret, int line, int column, int index)
+        public SecretDescriptor(string secret, int line, int column, int index, string? subKind = null)
         {
             Secret = secret;
             Line = line;
             Column = column;
             Index = index;
+            SubKind = subKind ?? string.Empty;
         }
 
         public string? Secret { get; }
@@ -27,5 +28,7 @@ namespace DotUtils.MsBuild.SensitiveDataDetector
         public int Column { get; }
 
         public int Index { get; }
+
+        public string SubKind { get; }
     }
 }
