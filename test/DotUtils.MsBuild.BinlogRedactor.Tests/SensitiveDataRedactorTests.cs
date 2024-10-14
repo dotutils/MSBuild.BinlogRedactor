@@ -17,7 +17,7 @@ namespace Microsoft.Build.BinlogRedactor.Tests
         public void UsernameDetector_RedactsUsernames()
         {
             string replacement = "XXXXX";
-            UsernameDetector detector = new UsernameDetector(replacement);
+            UserNameDetector detector = new UserNameDetector(replacement);
 
             detector.Redact("user1").Should().Be("user1");
             detector.Redact(@"D:\Users\user1\.nuget\").Should().Be(@$"D:\Users\{replacement}\.nuget\");
@@ -30,7 +30,7 @@ namespace Microsoft.Build.BinlogRedactor.Tests
         public void UsernameDetector_RedactsUsernames_shortPath()
         {
             string replacement = "XXXXX";
-            UsernameDetector detector = new UsernameDetector(replacement);
+            UserNameDetector detector = new UserNameDetector(replacement);
 
             detector.Redact("user1").Should().Be("user1");
             detector.Redact(@"D:\Users\user1").Should().Be(@$"D:\Users\{replacement}");
