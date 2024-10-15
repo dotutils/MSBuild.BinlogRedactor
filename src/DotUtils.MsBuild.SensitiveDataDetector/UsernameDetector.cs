@@ -78,7 +78,7 @@ internal class UserNameDetector(string? replacementText) : ISensitiveDataRedacto
         while ((index = input.IndexOf(Environment.UserName, index, StringComparison.InvariantCultureIgnoreCase)) != -1)
         {
             var lineInfo = StringUtils.GetLineAndColumn(input, index);
-            var secretDescriptor = new SecretDescriptor(Environment.UserName, lineInfo.lineNumber, lineInfo.columnNumber, index);
+            var secretDescriptor = new SecretDescriptor(Environment.UserName, lineInfo.lineNumber, lineInfo.columnNumber, index, "User Name");
             detectedUsernames.Add(secretDescriptor);
             index += Environment.UserName.Length;
 
