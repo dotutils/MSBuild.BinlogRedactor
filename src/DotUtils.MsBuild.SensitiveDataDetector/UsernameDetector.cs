@@ -61,7 +61,7 @@ internal class UserNameDetector(string? replacementText) : ISensitiveDataRedacto
         {
             var username = match.Groups[1].Value;
             var lineInfo = StringUtils.GetLineAndColumn(input, match.Groups[1].Index);
-            var secretDescriptor = new SecretDescriptor(username, lineInfo.lineNumber, lineInfo.columnNumber, match.Groups[1].Index);
+            var secretDescriptor = new SecretDescriptor(username, lineInfo.lineNumber, lineInfo.columnNumber, match.Groups[1].Index, "User Name");
             detectedUsernames.Add(secretDescriptor);
 
             if (!usernameFound)
@@ -122,7 +122,7 @@ internal class UserNameDetector(string? replacementText) : ISensitiveDataRedacto
                 return false;
             }
 
-            return x.GetType() != y.GetType() ? false : x.Secret == y.Secret && x.Index == y.Index;
+            return x.GetType() != y.GetType() ? false : x.Secret == y.Secret && x.Index == y.Index && x.SubKind == y.SubKind;
         }
 
         public int GetHashCode(SecretDescriptor obj)
@@ -132,6 +132,7 @@ internal class UserNameDetector(string? replacementText) : ISensitiveDataRedacto
                 int hash = 17;
                 hash = hash * 23 + (obj.Secret?.GetHashCode() ?? 0);
                 hash = hash * 23 + obj.Index.GetHashCode();
+                hash = hash * 23 + obj.SubKind.GetHashCode();
                 return hash;
             }
         }
