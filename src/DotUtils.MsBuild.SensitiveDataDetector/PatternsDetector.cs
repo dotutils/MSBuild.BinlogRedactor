@@ -45,7 +45,8 @@ internal static class CredentialsPatterns
          ("Google Api Key", new Regex(@"AIza[A-Za-z0-9_\\\-]{35}", regexOptions)),
          ("Slack Token", new Regex(@"xox[pbar]\-[A-Za-z0-9]", regexOptions)),
          ("Azure Ad Identity Password", new Regex(@"[0-9A-Za-z-_~.]{3}7Q~[0-9A-Za-z-_~.]{31}\b|\b[0-9A-Za-z-_~.]{3}8Q~[0-9A-Za-z-_~.]{34}", regexOptions)),
-         ("Email", new Regex(@"[a-zA-Z0-9-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+", regexOptions))
+         ("Email", new Regex(@"[a-zA-Z0-9-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+", regexOptions)),
+         ("GitHub Token", new Regex(@"(?:^|(?<=\W))(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})(?=$|\W)", regexOptions))
     };
 }
 

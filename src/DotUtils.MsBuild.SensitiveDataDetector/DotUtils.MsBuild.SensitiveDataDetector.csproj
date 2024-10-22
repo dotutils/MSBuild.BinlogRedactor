@@ -7,8 +7,8 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <!-- packaging properties -->
-    <PackageVersion>0.0.8</PackageVersion>
-    <Title>BinlogRedactor sensitive data autodetection library</Title>
+    <PackageVersion>0.0.9</PackageVersion>
+    <Title>BinlogRedactor sensitive data auto detection library</Title>
     <PackageId>DotUtils.MsBuild.BinlogRedactor.SensitiveDataDetector</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
