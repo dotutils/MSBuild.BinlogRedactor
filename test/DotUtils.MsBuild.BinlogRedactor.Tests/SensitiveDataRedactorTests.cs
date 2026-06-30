@@ -56,42 +56,28 @@ and yet another one {replacement} here
 """);
         }
 
-    [Theory]
-    [InlineData("AWS Access Key ID", "AKIA", "IOSFODNN7EXAMPLE")]
-    [InlineData("GitLab PAT", "glpat-", "abcdefghij0123456789")]
-    [InlineData("Stripe key", "sk_live_", "4eC39HqLyjWDarjtT1zdp7dc")]
-    [InlineData("OpenAI key", "sk-", "abcdefghijklmnopqrstuvwxyz0123456789ABCD")]
-    [InlineData("Mailgun key", "key-", "0123456789abcdef0123456789abcdef")]
-    public void PatternsDetector_RedactsAdditionalSecretTypes(string _, string prefix, string body)
-    {
-        string replacement = "XXXXX";
-        PatternsDetector detector = new PatternsDetector(true, replacement);
+        [Fact]
+        public void PatternsDetector_RedactsAdditionalSecretTypes()
+        {
+            string replacement = "XXXXX";
+            PatternsDetector detector = new PatternsDetector(true, replacement);
 
-        // Compose the sample secret at runtime to avoid embedding secret-like literals in source.
-        string secret = prefix + body;
+            detector.Redact("aws AKIAIOSFODNN7EXAMPLE here").Should().Be($"aws {replacement} here");
+            detector.Redact("gitlab glpat-AAAAAAAAAAAAAAAAAAAA here").Should().Be($"gitlab {replacement} here");
+            detector.Redact("stripe sk_live_" + "AAAAAAAAAAAAAAAAAAAAAAAA here").Should().Be($"stripe {replacement} here");
+            detector.Redact("openai sk-AAAAAAAAAAAAAAAAAAAAAAAA here").Should().Be($"openai {replacement} here");
+            detector.Redact("mailgun key-" + "00000000000000000000000000000000 here").Should().Be($"mailgun {replacement} here");
+            detector.Redact("sendgrid SG.AAAAAAAAAAAAAAAAAAAAAA.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA here").Should().Be($"sendgrid {replacement} here");
+        }
 
-        detector.Redact($"value {secret} end").Should().Be($"value {replacement} end");
-    }
+        [Fact]
+        public void PatternsDetector_RedactsPrivateKeyHeader()
+        {
+            string replacement = "XXXXX";
+            PatternsDetector detector = new PatternsDetector(true, replacement);
 
-    [Fact]
-    public void PatternsDetector_RedactsSendGridApiKey()
-    {
-        string replacement = "XXXXX";
-        PatternsDetector detector = new PatternsDetector(true, replacement);
-
-        string secret = "SG." + new string('a', 22) + "." + new string('b', 43);
-
-        detector.Redact($"value {secret} end").Should().Be($"value {replacement} end");
-    }
-
-    [Fact]
-    public void PatternsDetector_RedactsPrivateKeyHeader()
-    {
-        string replacement = "XXXXX";
-        PatternsDetector detector = new PatternsDetector(true, replacement);
-
-        detector.Redact("-----BEGIN RSA PRIVATE KEY-----").Should().Be(replacement);
-        detector.Redact("-----BEGIN PRIVATE KEY-----").Should().Be(replacement);
-    }
+            detector.Redact("-----BEGIN RSA PRIVATE KEY-----").Should().Be(replacement);
+            detector.Redact("-----BEGIN PRIVATE KEY-----").Should().Be(replacement);
+        }
     }
 }
