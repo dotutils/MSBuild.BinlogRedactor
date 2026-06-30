@@ -76,7 +76,7 @@ namespace Microsoft.Build.BinlogRedactor.Tests
 
             void AddArchiveFile(Dictionary<string, string> files, ArchiveFileEventArgs arg)
             {
-                ArchiveFile embedFile = arg.ArchiveData.ToArchString();
+                ArchiveFile embedFile = arg.ArchiveData.ToArchiveFile();
                 string content = embedFile.Content;
                 files.Add(embedFile.FullPath, content);
             }
