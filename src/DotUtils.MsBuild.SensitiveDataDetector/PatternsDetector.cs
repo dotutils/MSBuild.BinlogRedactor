@@ -46,7 +46,24 @@ internal static class CredentialsPatterns
          ("Slack Token", new Regex(@"xox[pbar]\-[A-Za-z0-9]", regexOptions)),
          ("Azure Ad Identity Password", new Regex(@"[0-9A-Za-z-_~.]{3}7Q~[0-9A-Za-z-_~.]{31}\b|\b[0-9A-Za-z-_~.]{3}8Q~[0-9A-Za-z-_~.]{34}", regexOptions)),
          ("Email", new Regex(@"[a-zA-Z0-9-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+", regexOptions)),
-         ("GitHub Token", new Regex(@"(?:^|(?<=\W))(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})(?=$|\W)", regexOptions))
+         ("GitHub Token", new Regex(@"(?:^|(?<=\W))(gh[psuor]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})(?=$|\W)", regexOptions)),
+         // Additional publicly documented high-confidence patterns
+         // (inspired by https://github.com/trufflesecurity/trufflehog and https://github.com/rodrigoramosrs/fileleaks)
+         ("GitLab Personal Access Token", new Regex(@"(?<![a-zA-Z0-9_])glpat-[0-9A-Za-z_\-]{20}(?![a-zA-Z0-9_])", regexOptions)),
+         ("AWS Access Key ID", new Regex(@"(?<![A-Z0-9])(?:AKIA|ASIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ABIA|ACCA)[A-Z0-9]{16}(?![A-Z0-9])", regexOptions)),
+         ("Stripe Api Key", new Regex(@"(?<![a-zA-Z0-9_])(?:sk|rk)_(?:live|test)_[0-9a-zA-Z]{24}(?![a-zA-Z0-9])", regexOptions)),
+         ("Google OAuth Access Token", new Regex(@"ya29\.[0-9A-Za-z_\-]{30,}", regexOptions)),
+         ("SendGrid Api Key", new Regex(@"(?<![a-zA-Z0-9])SG\.[0-9A-Za-z_\-]{22}\.[0-9A-Za-z_\-]{43}(?![a-zA-Z0-9])", regexOptions)),
+         ("Twilio Api Key", new Regex(@"(?<![0-9A-Za-z])SK[0-9a-fA-F]{32}(?![0-9A-Za-z])", regexOptions)),
+         ("Square Access Token", new Regex(@"(?<![0-9A-Za-z\-_])sq0atp-[0-9A-Za-z_\-]{22}(?![0-9A-Za-z\-_])", regexOptions)),
+         ("Square OAuth Secret", new Regex(@"(?<![0-9A-Za-z\-_])sq0csp-[0-9A-Za-z_\-]{43}(?![0-9A-Za-z\-_])", regexOptions)),
+         ("Mailgun Api Key", new Regex(@"(?<![0-9A-Za-z])key-[0-9a-f]{32}(?![0-9A-Za-z])", regexOptions)),
+         ("PyPI Upload Token", new Regex(@"pypi-AgEIcHlwaS5vcmc[0-9A-Za-z_\-]{50,1000}", regexOptions)),
+         ("OpenAI Api Key", new Regex(@"(?<![a-zA-Z0-9])sk-(?:proj-)?[0-9A-Za-z_\-]{20,}(?![a-zA-Z0-9_\-])", regexOptions)),
+         ("Telegram Bot Token", new Regex(@"(?<![0-9])\d{8,10}:AA[0-9A-Za-z_\-]{33}(?![0-9A-Za-z_\-])", regexOptions)),
+         ("Slack Webhook Url", new Regex(@"https://hooks\.slack\.com/services/T[A-Z0-9]{8,}/B[A-Z0-9]{8,}/[A-Za-z0-9]{20,}", regexOptions)),
+         ("JSON Web Token", new Regex(@"eyJ[A-Za-z0-9_\-]{8,}\.eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}", regexOptions)),
+         ("Private Key", new Regex(@"-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP |ENCRYPTED )?PRIVATE KEY(?: BLOCK)?-----", regexOptions))
     };
 }
 
