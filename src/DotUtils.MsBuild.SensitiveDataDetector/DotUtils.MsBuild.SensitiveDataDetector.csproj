@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <!-- packaging properties -->
-    <PackageVersion>0.0.9</PackageVersion>
+    <PackageVersion>1.0.0</PackageVersion>
     <Title>BinlogRedactor sensitive data auto detection library</Title>
     <PackageId>DotUtils.MsBuild.BinlogRedactor.SensitiveDataDetector</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
